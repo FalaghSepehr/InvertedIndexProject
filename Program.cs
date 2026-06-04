@@ -16,27 +16,25 @@ public static class AppConstatnts
 
 class Program
 {
-    
     static void Main(string[] args)
     {
-        Console.Write("Search: ");
-        string userInput = Console.ReadLine().Trim().ToLower();
+        
 
-        foreach (char p in AppConstatnts.punctuation)
-            userInput = userInput.Replace(p.ToString(), "");
-
-        string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-        string documentsPath = Path.Combine(projectDir, "Documents");
-        string[] txtFilesDirs = Directory.GetFiles(documentsPath, "*.txt");
+        var myInvertedIndex = new InvertedIndex(txtFilesDirs);
 
         // Show Inverted Index:
         Console.WriteLine("======================\nHere's the inverted index: ");
-        foreach (var pair in InvertedIndex(txtFilesDirs))
+        foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
             Console.WriteLine($"{pair.Key}: {string.Join(", ", pair.Value)}");
         }
         Console.WriteLine("======================");
-        
+    }
+    public static string[] GetDocuments()
+    {
+        string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+        string documentsPath = Path.Combine(projectDir, "Documents");
+        return Directory.GetFiles(documentsPath, "*.txt");
     }
     public static List<string> SearchDocuments(string query, Dictionary<string, List<string>> invertedIndex)
     {
@@ -62,7 +60,7 @@ class Program
         }
         bool first = true;
         foreach (var term in mustHaveTerms)
-        {   
+        {
             if (invertedIndex.TryGetValue(term, out var documents))
                 if (first)
                     mustHaveDocs = documents;
@@ -84,11 +82,22 @@ class Program
 
         return mustHaveDocs.Intersect(atLeastOneDocs).Except(mustHaveDocs).ToList();
     }
-
-    public static Dictionary<string, List<string>> InvertedIndex(string[] fileDirectories)
+    public static string GetInput()
     {
-        var invertedIndex = new Dictionary<string, List<string>>();
-        char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
+        string userInput = Console.ReadLine().Trim().ToLower();
+
+        foreach (char p in AppConstatnts.punctuation)
+            userInput = userInput.Replace(p.ToString(), "");
+
+        return userInput;
+
+    }
+}
+public class InvertedIndex
+{
+    public Dictionary<string, List<string>> InvertedIndexDic { get; set; }
+    public InvertedIndex(string[] fileDirectories)
+    {
 
         foreach (string txtFileDir in fileDirectories)
         {
@@ -96,7 +105,7 @@ class Program
             string content = File.ReadAllText(txtFileDir).ToLower().Trim();
 
             // Handles punctuations in the documents:
-            foreach (char p in punctuation)
+            foreach (char p in AppConstatnts.punctuation)
                 content = content.Replace(p, ' ');
 
             // Handles multiple spaces in the documents (and the punctuatuins that got repleaced with ' '):
@@ -104,18 +113,12 @@ class Program
 
             foreach (string term in terms)
             {
-                if (!invertedIndex.ContainsKey(term))
-                    invertedIndex[term] = new List<string>();
+                if (!InvertedIndexDic.ContainsKey(term))
+                    InvertedIndexDic[term] = new List<string>();
 
-                if (!invertedIndex[term].Contains(fileName))
-                    invertedIndex[term].Add(fileName);
+                if (!InvertedIndexDic[term].Contains(fileName))
+                    InvertedIndexDic[term].Add(fileName);
             }
         }
-
-        return invertedIndex;
-
-
     }
-
 }
-
