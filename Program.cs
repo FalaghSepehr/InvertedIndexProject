@@ -9,22 +9,19 @@ using Microsoft.VisualBasic;
 namespace InvertedIndex_Program;
 
 
+
 class Program
 {
-    readonly char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
+    readonly static char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
     
     static void Main(string[] args)
     {
-        
-
         Console.Write("Search: ");
-        string searchedWord = Console.ReadLine().Trim().ToLower();
+        string userInput = Console.ReadLine().Trim().ToLower();
 
-        // Handles punctuations in the searched word:
         foreach (char p in punctuation)
-            searchedWord = searchedWord.Replace(p.ToString(), "");
+            userInput = userInput.Replace(p.ToString(), "");
 
-        // File directory handling
         string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         string documentsPath = Path.Combine(projectDir, "Documents");
         string[] txtFilesDirs = Directory.GetFiles(documentsPath, "*.txt");
@@ -43,27 +40,46 @@ class Program
         var queryArray = query.Split();
 
         var result = new List<string>();
-        var mustHave = new List<string>();
-        var atLeastOne = new List<string>();
-        var mustNotHave = new List<string>();
+        var mustHaveTerms = new List<string>();
+        var atLeastOneTerms = new List<string>();
+        var mustNotHaveTerms = new List<string>();
+
+        var mustHaveDocs = new List<string>();
+        var atLeastOneDocs = new List<string>();
+        var mustNotHaveDocs = new List<string>();
 
         foreach (string item in queryArray)
         {
             if (item[0] == '+')
-                atLeastOne.Add(item.Substring(1));
+                atLeastOneTerms.Add(item.Substring(1));
             else if (item[0] == '-')
-                mustNotHave.Add(item.Substring(1));
+                mustNotHaveTerms.Add(item.Substring(1));
             else
-                mustHave.Add(item);
+                mustHaveTerms.Add(item);
         }
-
-        foreach (var term in mustHave)
+        bool first = true;
+        foreach (var term in mustHaveTerms)
+        {   
+            if (invertedIndex.TryGetValue(term, out var documents))
+                if (first)
+                    mustHaveDocs = documents;
+                else
+                    mustHaveDocs = mustHaveDocs.Intersect(documents).ToList();
+            else
+                mustHaveDocs.Clear();
+        }
+        foreach (var term in atLeastOneTerms)
         {
-            if (invertedIndex.TryGetValue(term, out var value))
-                result.AddRange(value);
+            if (invertedIndex.TryGetValue(term, out var documents))
+                atLeastOneDocs = atLeastOneDocs.Union(documents).ToList();
+        }
+        foreach (var term in mustNotHaveTerms)
+        {
+            if (invertedIndex.TryGetValue(term, out var documents))
+                mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
         }
 
-        return result;
+        return mustHaveDocs.Intersect(atLeastOneDocs).Except(mustHaveDocs).ToList();
     }
 
     public static Dictionary<string, List<string>> InvertedIndex(string[] fileDirectories)
