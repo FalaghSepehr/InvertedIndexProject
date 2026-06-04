@@ -8,18 +8,21 @@ using Microsoft.VisualBasic;
 
 namespace InvertedIndex_Program;
 
+public static class AppConstatnts
+{
+    public readonly static char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
 
+}
 
 class Program
 {
-    readonly static char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
     
     static void Main(string[] args)
     {
         Console.Write("Search: ");
         string userInput = Console.ReadLine().Trim().ToLower();
 
-        foreach (char p in punctuation)
+        foreach (char p in AppConstatnts.punctuation)
             userInput = userInput.Replace(p.ToString(), "");
 
         string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
