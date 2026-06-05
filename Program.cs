@@ -78,8 +78,13 @@ class Program
                 mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
         }
 
-        result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
-
+        if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() != 0)
+            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
+        else if (mustHaveDocs.Count() != 0 && atLeastOneDocs.Count() != 0)
+            result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+        else if (mustHaveDocs.Count() == 0 || atLeastOneDocs.Count() == 0)
+            result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+                    
         if (result.Count() == 0)
             return "No results!";
         else
