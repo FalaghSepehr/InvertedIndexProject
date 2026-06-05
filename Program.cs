@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.VisualBasic;
+
 
 namespace InvertedIndex_Program;
 
@@ -19,8 +16,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        
-
         var myInvertedIndex = new InvertedIndex(GetDocumentsPaths());
 
         Console.WriteLine("======================\nHere's the inverted index: ");
@@ -31,7 +26,7 @@ class Program
         Console.WriteLine("======================");
 
         System.Console.Write("Search: ");
-        System.Console.WriteLine(string.Join(", ", SearchDocuments(GetInput(), myInvertedIndex.InvertedIndexDic)));
+        System.Console.WriteLine(GetSearchResult(GetInput(), myInvertedIndex.InvertedIndexDic));
     }
     public static string[] GetDocumentsPaths()
     {
@@ -39,7 +34,7 @@ class Program
         string documentsPath = Path.Combine(projectDir, "Documents");
         return Directory.GetFiles(documentsPath, "*.txt");
     }
-    public static List<string> SearchDocuments(string query, Dictionary<string, List<string>> invertedIndex)
+    public static string GetSearchResult(string query, Dictionary<string, List<string>> invertedIndex)
     {
         var queryArray = query.Split();
 
@@ -83,7 +78,14 @@ class Program
                 mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
         }
 
-        return mustHaveDocs.Intersect(atLeastOneDocs).Except(mustHaveDocs).ToList();
+        result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+
+        if (result.Count() == 0)
+            return "No results!";
+        else
+        {
+            return string.Join(", ", result);
+        }
     }
     public static string GetInput()
     {
@@ -98,7 +100,7 @@ class Program
 }
 public class InvertedIndex
 {
-    public Dictionary<string, List<string>> InvertedIndexDic { get; set; }
+    public Dictionary<string, List<string>> InvertedIndexDic { get; set; } = new();
     public InvertedIndex(string[] fileDirectories)
     {
 
