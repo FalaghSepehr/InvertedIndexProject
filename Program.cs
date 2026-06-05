@@ -80,14 +80,12 @@ class Program
             if (invertedIndex.TryGetValue(term, out var documents))
                 mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
         }
-
-        if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() != 0)
-            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
-        else if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() == 0)
-        {
+        if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() == 0)
             if (mustNotHaveTerms.Count() != 0)
                 result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
-        }
+        else if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() != 0)
+            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
+        
         else if (mustHaveDocs.Count() != 0 && atLeastOneDocs.Count() != 0)
             result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
         else if (mustHaveDocs.Count() == 0 || atLeastOneDocs.Count() == 0)
