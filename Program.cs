@@ -8,7 +8,9 @@ namespace InvertedIndex_Program;
 
 public static class AppConstatnts
 {
-    public readonly static char[] punctuation = { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']' };
+    public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+    public readonly static char[] punctuations = File.ReadAllText(Path.Combine(projectDir, "AppConstants/punctuations")).ToCharArray();
+    public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ');
 
 }
 
@@ -30,14 +32,15 @@ class Program
     }
     public static string[] GetDocumentsPaths()
     {
-        string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-        string documentsPath = Path.Combine(projectDir, "Documents");
-        return Directory.GetFiles(documentsPath, "*.txt");
+        string documentsPath = Path.Combine(AppConstatnts.projectDir, "Documents");
+        return Directory.GetFiles(documentsPath);
     }
     public static string GetSearchResult(string query, Dictionary<string, List<string>> invertedIndex)
     {
         if (query == "")
+        {
             return "No results!";
+        }
 
         var queryArray = query.Split();
 
@@ -53,46 +56,72 @@ class Program
         foreach (string item in queryArray)
         {
             if (item[0] == '+')
+            {
                 atLeastOneTerms.Add(item.Substring(1));
+            }
             else if (item[0] == '-')
+            {
                 mustNotHaveTerms.Add(item.Substring(1));
+            }
             else
+            {
                 mustHaveTerms.Add(item);
+            }
         }
         bool first = true;
         foreach (var term in mustHaveTerms)
         {
             if (invertedIndex.TryGetValue(term, out var documents))
+            {
                 if (first)
                     mustHaveDocs = documents;
                 else
                     mustHaveDocs = mustHaveDocs.Intersect(documents).ToList();
+            }
             else
+            {
                 mustHaveDocs.Clear();
+            }
         }
         foreach (var term in atLeastOneTerms)
         {
             if (invertedIndex.TryGetValue(term, out var documents))
+            {
                 atLeastOneDocs = atLeastOneDocs.Union(documents).ToList();
+            }
         }
         foreach (var term in mustNotHaveTerms)
         {
             if (invertedIndex.TryGetValue(term, out var documents))
+            {
                 mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
+            }
         }
+
         if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() == 0)
+        {
             if (mustNotHaveTerms.Count() != 0)
+            {
                 result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
+            }
+        }
         else if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() != 0)
+        {
             result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
-        
+        }
         else if (mustHaveDocs.Count() != 0 && atLeastOneDocs.Count() != 0)
+        {
             result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+        }
         else if (mustHaveDocs.Count() == 0 || atLeastOneDocs.Count() == 0)
+        {
             result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+        }
 
         if (result.Count() == 0)
+        {
             return "No results!";
+        }
         else
         {
             return string.Join(", ", result);
@@ -102,11 +131,12 @@ class Program
     {
         string userInput = Console.ReadLine().Trim().ToLower();
 
-        foreach (char p in AppConstatnts.punctuation)
+        foreach (char p in AppConstatnts.punctuations)
+        {
             userInput = userInput.Replace(p.ToString(), "");
+        }
 
         return userInput;
-
     }
 }
 public class InvertedIndex
@@ -120,20 +150,29 @@ public class InvertedIndex
             string fileName = Path.GetFileNameWithoutExtension(txtFileDir);
             string content = File.ReadAllText(txtFileDir).ToLower().Trim();
 
-            // Handles punctuations in the documents:
-            foreach (char p in AppConstatnts.punctuation)
+            foreach (char p in AppConstatnts.punctuations)
+            {
                 content = content.Replace(p, ' ');
+            }
 
-            // Handles multiple spaces in the documents (and the punctuatuins that got repleaced with ' '):
-            string[] terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
+            foreach (var stopWord in AppConstatnts.stopWords)
+            {
+                terms.RemoveAll(t => t == stopWord);
+            }
+            
             foreach (string term in terms)
             {
                 if (!InvertedIndexDic.ContainsKey(term))
+                {
                     InvertedIndexDic[term] = new List<string>();
+                }
 
                 if (!InvertedIndexDic[term].Contains(fileName))
+                {
                     InvertedIndexDic[term].Add(fileName);
+                }
             }
         }
     }
