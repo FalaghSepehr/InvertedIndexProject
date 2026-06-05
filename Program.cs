@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic;
 
@@ -20,17 +21,19 @@ class Program
     {
         
 
-        var myInvertedIndex = new InvertedIndex(txtFilesDirs);
+        var myInvertedIndex = new InvertedIndex(GetDocumentsPaths());
 
-        // Show Inverted Index:
         Console.WriteLine("======================\nHere's the inverted index: ");
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
             Console.WriteLine($"{pair.Key}: {string.Join(", ", pair.Value)}");
         }
         Console.WriteLine("======================");
+
+        System.Console.Write("Search: ");
+        System.Console.WriteLine(string.Join(", ", SearchDocuments(GetInput(), myInvertedIndex.InvertedIndexDic)));
     }
-    public static string[] GetDocuments()
+    public static string[] GetDocumentsPaths()
     {
         string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         string documentsPath = Path.Combine(projectDir, "Documents");
