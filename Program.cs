@@ -36,6 +36,9 @@ class Program
     }
     public static string GetSearchResult(string query, Dictionary<string, List<string>> invertedIndex)
     {
+        if (query == "")
+            return "No results!";
+
         var queryArray = query.Split();
 
         var result = new List<string>();
@@ -84,7 +87,7 @@ class Program
             result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
         else if (mustHaveDocs.Count() == 0 || atLeastOneDocs.Count() == 0)
             result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
-                    
+
         if (result.Count() == 0)
             return "No results!";
         else
