@@ -11,6 +11,7 @@ public static class AppConstatnts
     public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
     public readonly static char[] punctuations = File.ReadAllText(Path.Combine(projectDir, "AppConstants/punctuations")).ToCharArray();
     public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ');
+    public readonly static char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 }
 
@@ -154,6 +155,10 @@ public class InvertedIndex
             {
                 content = content.Replace(p, ' ');
             }
+            foreach (char n in AppConstatnts.numbers)
+            {
+                content = content.Replace(n, ' ');
+            }
 
             List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -161,7 +166,7 @@ public class InvertedIndex
             {
                 terms.RemoveAll(t => t == stopWord);
             }
-            
+
             foreach (string term in terms)
             {
                 if (!InvertedIndexDic.ContainsKey(term))
