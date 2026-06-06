@@ -162,11 +162,12 @@ public class InvertedIndex
 
             List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
 
+            terms.RemoveAll(t => t.Length < 3);
+
             foreach (var stopWord in AppConstatnts.stopWords)
             {
                 terms.RemoveAll(t => t == stopWord);
             }
-
             foreach (string term in terms)
             {
                 if (!InvertedIndexDic.ContainsKey(term))
