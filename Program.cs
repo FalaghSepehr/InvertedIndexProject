@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PorterStemmer.Stemmers;
+
 
 
 namespace InvertedIndex_Program;
@@ -9,7 +11,7 @@ namespace InvertedIndex_Program;
 public static class AppConstatnts
 {
     public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-    public readonly static char[] punctuations = File.ReadAllText(Path.Combine(projectDir, "AppConstants/punctuations")).ToCharArray();
+    public readonly static char[] symbols = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbols")).ToCharArray();
     public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ');
     public readonly static char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
@@ -132,7 +134,7 @@ class Program
     {
         string userInput = Console.ReadLine().Trim().ToLower();
 
-        foreach (char p in AppConstatnts.punctuations)
+        foreach (char p in AppConstatnts.symbols)
         {
             userInput = userInput.Replace(p.ToString(), "");
         }
@@ -151,7 +153,7 @@ public class InvertedIndex
             string fileName = Path.GetFileNameWithoutExtension(txtFileDir);
             string content = File.ReadAllText(txtFileDir).ToLower().Trim();
 
-            foreach (char p in AppConstatnts.punctuations)
+            foreach (char p in AppConstatnts.symbols)
             {
                 content = content.Replace(p, ' ');
             }
@@ -168,6 +170,9 @@ public class InvertedIndex
             {
                 terms.RemoveAll(t => t == stopWord);
             }
+            
+            terms = terms.Select(t => StemmerHelper.Stem(t)).ToList();
+
             foreach (string term in terms)
             {
                 if (!InvertedIndexDic.ContainsKey(term))
@@ -183,3 +188,14 @@ public class InvertedIndex
         }
     }
 }
+
+public static class StemmerHelper
+{
+    public static readonly EnglishStemmer Stemmer = new();
+
+    public static string Stem(string word)
+    {
+        return Stemmer.GetStem(word);
+    }
+}
+
