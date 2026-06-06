@@ -60,15 +60,15 @@ class Program
         {
             if (item[0] == '+')
             {
-                atLeastOneTerms.Add(item.Substring(1));
+                atLeastOneTerms.Add(StemmerHelper.Stem(item.Substring(1)));
             }
             else if (item[0] == '-')
             {
-                mustNotHaveTerms.Add(item.Substring(1));
+                mustNotHaveTerms.Add(StemmerHelper.Stem(item.Substring(1)));
             }
             else
             {
-                mustHaveTerms.Add(item);
+                mustHaveTerms.Add(StemmerHelper.Stem(item));
             }
         }
         bool first = true;
