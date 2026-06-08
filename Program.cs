@@ -11,6 +11,7 @@ namespace InvertedIndex_Program;
 public static class AppConstatnts
 {
     public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
+    public readonly static string outputPath = Path.Combine(projectDir, "myOutputs/inverted_index.txt");
     public readonly static string[] symbols = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbols")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
     public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
     public readonly static char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -23,15 +24,16 @@ class Program
     {
         var myInvertedIndex = new InvertedIndex(GetDocumentsPaths());
 
-        Console.WriteLine("======================\nHere's the inverted index: ");
+        using StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
-            Console.WriteLine($"{pair.Key}: {string.Join(", ", pair.Value)}");
+            writer.WriteLine($"{pair.Key}: {string.Join(", ", pair.Value)}");
         }
-        Console.WriteLine("======================");
+        Console.WriteLine($"Index written to {AppConstatnts.outputPath}");
 
-        // System.Console.Write("Search: ");
-        // System.Console.WriteLine(GetSearchResult(GetInput(), myInvertedIndex.InvertedIndexDic));
+        
+        System.Console.Write("Search: ");
+        System.Console.WriteLine(GetSearchResult(GetInput(), myInvertedIndex.InvertedIndexDic));
     }
     public static string[] GetDocumentsPaths()
     {
@@ -60,17 +62,26 @@ class Program
         {
             if (item[0] == '+')
             {
-                atLeastOneTerms.Add(StemmerHelper.Stem(item.Substring(1)));
+                atLeastOneTerms.Add(item.Substring(1));
             }
             else if (item[0] == '-')
             {
-                mustNotHaveTerms.Add(StemmerHelper.Stem(item.Substring(1)));
+                mustNotHaveTerms.Add(item.Substring(1));
             }
             else
             {
-                mustHaveTerms.Add(StemmerHelper.Stem(item));
+                mustHaveTerms.Add(item);
             }
         }
+
+        mustHaveTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
+        atLeastOneTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
+        mustNotHaveTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
+
+        mustHaveTerms = mustHaveTerms.Select(t => StemmerHelper.Stem(t)).ToList();
+        atLeastOneTerms = atLeastOneTerms.Select(t => StemmerHelper.Stem(t)).ToList();
+        mustNotHaveTerms = mustNotHaveTerms.Select(t => StemmerHelper.Stem(t)).ToList();
+
         bool first = true;
         foreach (var term in mustHaveTerms)
         {
@@ -133,11 +144,12 @@ class Program
     public static string GetInput()
     {
         string userInput = Console.ReadLine().Trim().ToLower();
-
+        
         foreach (var p in AppConstatnts.symbols.Where(c => c != "+" && c != "-"))
         {
             userInput = userInput.Replace(p.ToString(), "");
         }
+        
 
         return userInput;
     }
