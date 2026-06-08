@@ -2,3 +2,4 @@
 /bin
 InvertedIndex Program.csproj.lscache
 /Documents
+myOutputs/inverted_index.txt

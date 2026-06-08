@@ -27,7 +27,7 @@ class Program
         using StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
-            writer.WriteLine($"{pair.Key}: {string.Join(", ", pair.Value)}");
+            writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
         }
         Console.WriteLine($"Index written to {AppConstatnts.outputPath}");
 
@@ -47,7 +47,7 @@ class Program
             return "No results!";
         }
 
-        var queryArray = query.Split();
+        var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
         var result = new List<string>();
         var mustHaveTerms = new List<string>();
@@ -88,7 +88,10 @@ class Program
             if (invertedIndex.TryGetValue(term, out var documents))
             {
                 if (first)
+                {
                     mustHaveDocs = documents;
+                    first = false;
+                }     
                 else
                     mustHaveDocs = mustHaveDocs.Intersect(documents).ToList();
             }
@@ -147,9 +150,12 @@ class Program
         
         foreach (var p in AppConstatnts.symbols.Where(c => c != "+" && c != "-"))
         {
-            userInput = userInput.Replace(p.ToString(), "");
+            userInput = userInput.Replace(p, " ");
         }
-        
+        foreach (var n in AppConstatnts.numbers)
+        {
+            userInput = userInput.Replace(n.ToString(), " ");
+        }
 
         return userInput;
     }
@@ -167,11 +173,11 @@ public class InvertedIndex
 
             foreach (var p in AppConstatnts.symbols)
             {
-                content = content.Replace(p.ToString(), "");
+                content = content.Replace(p, " ");
             }
             foreach (var n in AppConstatnts.numbers)
             {
-                content = content.Replace(n.ToString(), "");
+                content = content.Replace(n.ToString(), " ");
             }
 
             List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
