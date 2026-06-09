@@ -55,10 +55,7 @@ class Program
         var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
         for (int i = 0; i < queryBundle.Count; i++)
         {
-            queryBundle[i] = queryBundle[i]
-            .Select(word => AppConstatnts.symbolsAndNumbers.Aggregate(word, (current, nextChar) => current.Replace(nextChar, ' ')))
-            .Where(word => !AppConstatnts.stopWords.Contains(word))
-            .Select(StemmerHelper.Stem).ToList();
+            queryBundle[i] = queryBundle[i].FilterTerms();
         }
         return queryBundle;
     }
@@ -149,22 +146,7 @@ public class InvertedIndex
         {
             string fileName = Path.GetFileNameWithoutExtension(docFileDir);
             string content = File.ReadAllText(docFileDir).ToLower().Trim();
-
-            foreach (var p in AppConstatnts.symbolsAndNumbers)
-            {
-                content = content.Replace(p, ' ');
-            }
-
-            List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-            terms.RemoveAll(t => t.Length < 3);
-
-            foreach (var stopWord in AppConstatnts.stopWords)
-            {
-                terms.RemoveAll(t => t == stopWord);
-            }
-
-            terms = terms.Select(StemmerHelper.Stem).ToList();
+            List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList().FilterTerms();
 
             foreach (string term in terms)
             {
@@ -172,7 +154,6 @@ public class InvertedIndex
                 {
                     InvertedIndexDic[term] = new List<string>();
                 }
-
                 if (!InvertedIndexDic[term].Contains(fileName))
                 {
                     InvertedIndexDic[term].Add(fileName);
@@ -181,7 +162,6 @@ public class InvertedIndex
         }
     }
 }
-
 public static class StemmerHelper
 {
     public static readonly EnglishStemmer Stemmer = new();
@@ -191,4 +171,15 @@ public static class StemmerHelper
         return Stemmer.GetStem(word);
     }
 }
-
+public static class ListExtensions
+{
+    public static List<string> FilterTerms(this List<string> terms)
+    {
+        return terms
+            .SelectMany(t => AppConstatnts.symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            .Where(t => !AppConstatnts.stopWords.Contains(t))
+            .Where(t => t.Length > 2)
+            .Select(StemmerHelper.Stem).ToList();
+    }
+}
