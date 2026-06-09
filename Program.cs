@@ -4,8 +4,6 @@ using System.IO;
 using System.Linq;
 using PorterStemmer.Stemmers;
 
-
-
 namespace InvertedIndex_Program;
 
 public static class AppConstatnts
@@ -15,14 +13,14 @@ public static class AppConstatnts
     public readonly static string[] symbols = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbols")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
     public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
     public readonly static char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
+    public static string[] documentPaths = Directory.GetFiles(Path.Combine(projectDir, "Documents"));
 }
 
 class Program
 {
     static void Main(string[] args)
     {
-        var myInvertedIndex = new InvertedIndex(GetDocumentsPaths());
+        var myInvertedIndex = new InvertedIndex(AppConstatnts.documentPaths);
 
         using StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
@@ -34,11 +32,6 @@ class Program
         
         System.Console.Write("Search: ");
         System.Console.WriteLine(GetSearchResult(GetInput(), myInvertedIndex.InvertedIndexDic));
-    }
-    public static string[] GetDocumentsPaths()
-    {
-        string documentsPath = Path.Combine(AppConstatnts.projectDir, "Documents");
-        return Directory.GetFiles(documentsPath);
     }
     public static string GetSearchResult(string query, Dictionary<string, List<string>> invertedIndex)
     {
