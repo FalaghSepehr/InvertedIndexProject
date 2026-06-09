@@ -10,9 +10,8 @@ public static class AppConstatnts
 {
     public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
     public readonly static string outputPath = Path.Combine(projectDir, "myOutputs/inverted_index.txt");
-    public readonly static string[] symbols = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbols")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    public readonly static char[] symbolsAndNumbers = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbolsAndNumbers")).Where(c => !char.IsWhiteSpace(c)).ToArray();
     public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    public readonly static char[] numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     public static string[] documentPaths = Directory.GetFiles(Path.Combine(projectDir, "Documents"));
 }
 
@@ -21,35 +20,22 @@ class Program
     static void Main(string[] args)
     {
         var myInvertedIndex = new InvertedIndex(AppConstatnts.documentPaths);
-
-        using StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
+        StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
             writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
         }
         Console.WriteLine($"Index written to {AppConstatnts.outputPath}");
-
-        
-        System.Console.Write("Search: ");
-        System.Console.WriteLine(GetSearchResult(GetInput(), myInvertedIndex.InvertedIndexDic));
+        Console.Write("Search: ");
+        Console.WriteLine(GetSearchResult(GetQueryBundle(), myInvertedIndex.InvertedIndexDic));
     }
-    public static string GetSearchResult(string query, Dictionary<string, List<string>> invertedIndex)
+    public static List<List<string>> GetQueryBundle()
     {
-        if (query == "")
-        {
-            return "No results!";
-        }
-
+        string query = Console.ReadLine().Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        var result = new List<string>();
         var mustHaveTerms = new List<string>();
         var atLeastOneTerms = new List<string>();
         var mustNotHaveTerms = new List<string>();
-
-        var mustHaveDocs = new List<string>();
-        var atLeastOneDocs = new List<string>();
-        var mustNotHaveDocs = new List<string>();
 
         foreach (string item in queryArray)
         {
@@ -66,14 +52,26 @@ class Program
                 mustHaveTerms.Add(item);
             }
         }
+        var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
+        for (int i = 0; i < queryBundle.Count; i++)
+        {
+            queryBundle[i] = queryBundle[i]
+            .Select(word => AppConstatnts.symbolsAndNumbers.Aggregate(word, (current, nextChar) => current.Replace(nextChar, ' ')))
+            .Where(word => !AppConstatnts.stopWords.Contains(word))
+            .Select(StemmerHelper.Stem).ToList();
+        }
+        return queryBundle;
+    }
+    public static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
+    {
+        var result = new List<string>();
+        var mustHaveDocs = new List<string>();
+        var atLeastOneDocs = new List<string>();
+        var mustNotHaveDocs = new List<string>();
 
-        mustHaveTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
-        atLeastOneTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
-        mustNotHaveTerms.RemoveAll(t => AppConstatnts.stopWords.Contains(t));
-
-        mustHaveTerms = mustHaveTerms.Select(t => StemmerHelper.Stem(t)).ToList();
-        atLeastOneTerms = atLeastOneTerms.Select(t => StemmerHelper.Stem(t)).ToList();
-        mustNotHaveTerms = mustNotHaveTerms.Select(t => StemmerHelper.Stem(t)).ToList();
+        var mustHaveTerms = queryBundle[0];
+        var atLeastOneTerms = queryBundle[1];
+        var mustNotHaveTerms = queryBundle[2];
 
         bool first = true;
         foreach (var term in mustHaveTerms)
@@ -84,9 +82,11 @@ class Program
                 {
                     mustHaveDocs = documents;
                     first = false;
-                }     
+                }
                 else
+                {
                     mustHaveDocs = mustHaveDocs.Intersect(documents).ToList();
+                }
             }
             else
             {
@@ -108,27 +108,27 @@ class Program
             }
         }
 
-        if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() == 0)
+        if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
         {
-            if (mustNotHaveTerms.Count() != 0)
+            if (mustNotHaveTerms.Count != 0)
             {
                 result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
             }
         }
-        else if (mustHaveDocs.Count() == 0 && atLeastOneDocs.Count() == 0 && mustNotHaveDocs.Count() != 0)
+        else if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count != 0)
         {
             result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
         }
-        else if (mustHaveDocs.Count() != 0 && atLeastOneDocs.Count() != 0)
+        else if (mustHaveDocs.Count != 0 && atLeastOneDocs.Count != 0)
         {
             result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
         }
-        else if (mustHaveDocs.Count() == 0 || atLeastOneDocs.Count() == 0)
+        else if (mustHaveDocs.Count == 0 || atLeastOneDocs.Count == 0)
         {
             result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
         }
 
-        if (result.Count() == 0)
+        if (result.Count == 0)
         {
             return "No results!";
         }
@@ -137,21 +137,7 @@ class Program
             return string.Join(", ", result);
         }
     }
-    public static string GetInput()
-    {
-        string userInput = Console.ReadLine().Trim().ToLower();
-        
-        foreach (var p in AppConstatnts.symbols.Where(c => c != "+" && c != "-"))
-        {
-            userInput = userInput.Replace(p, " ");
-        }
-        foreach (var n in AppConstatnts.numbers)
-        {
-            userInput = userInput.Replace(n.ToString(), " ");
-        }
 
-        return userInput;
-    }
 }
 public class InvertedIndex
 {
@@ -159,18 +145,14 @@ public class InvertedIndex
     public InvertedIndex(string[] fileDirectories)
     {
 
-        foreach (string txtFileDir in fileDirectories)
+        foreach (string docFileDir in fileDirectories)
         {
-            string fileName = Path.GetFileNameWithoutExtension(txtFileDir);
-            string content = File.ReadAllText(txtFileDir).ToLower().Trim();
+            string fileName = Path.GetFileNameWithoutExtension(docFileDir);
+            string content = File.ReadAllText(docFileDir).ToLower().Trim();
 
-            foreach (var p in AppConstatnts.symbols)
+            foreach (var p in AppConstatnts.symbolsAndNumbers)
             {
-                content = content.Replace(p, " ");
-            }
-            foreach (var n in AppConstatnts.numbers)
-            {
-                content = content.Replace(n.ToString(), " ");
+                content = content.Replace(p, ' ');
             }
 
             List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -182,7 +164,7 @@ public class InvertedIndex
                 terms.RemoveAll(t => t == stopWord);
             }
 
-            terms = terms.Select(t => StemmerHelper.Stem(t)).ToList();
+            terms = terms.Select(StemmerHelper.Stem).ToList();
 
             foreach (string term in terms)
             {
