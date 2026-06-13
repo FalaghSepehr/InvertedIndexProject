@@ -160,6 +160,10 @@ public class InvertedIndex
                 }
             }
         }
+        foreach (var term in InvertedIndexDic.Keys)
+        {
+            InvertedIndexDic[term].Sort();
+        }
     }
 }
 public static class StemmerHelper
