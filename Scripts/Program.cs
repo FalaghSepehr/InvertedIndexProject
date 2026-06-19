@@ -11,12 +11,13 @@ class Program
     {
         var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
         StreamWriter writer = new StreamWriter(AppUtility.Paths.outputPath);
-        foreach (var pair in myInvertedIndex.InvertedIndexDic)
+        foreach (var pair in myInvertedIndex.indexDic)
         {
             writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
         }
         Console.WriteLine($"Index written to {AppUtility.Paths.outputPath}");
-        Console.Write("Search: ");
-        Console.WriteLine(InvertedIndex.GetSearchResult(QueryParser.ParseQueryBundle(), myInvertedIndex.InvertedIndexDic));
+
+        ConsoleUI.Run(myInvertedIndex);
     }
+     
 }

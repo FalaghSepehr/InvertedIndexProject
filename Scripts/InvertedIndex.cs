@@ -1,6 +1,6 @@
 public class InvertedIndex
 {
-    public Dictionary<string, List<string>> InvertedIndexDic { get; set; } = new();
+    public Dictionary<string, List<string>> indexDic { get; set; } = new();
     public InvertedIndex(string[] fileDirectories)
     {
         foreach (string docFileDir in fileDirectories)
@@ -11,22 +11,26 @@ public class InvertedIndex
 
             foreach (string term in terms)
             {
-                if (!InvertedIndexDic.ContainsKey(term))
+                if (!indexDic.ContainsKey(term))
                 {
-                    InvertedIndexDic[term] = new List<string>();
+                    indexDic[term] = new List<string>();
                 }
-                if (!InvertedIndexDic[term].Contains(fileName))
+                if (!indexDic[term].Contains(fileName))
                 {
-                    InvertedIndexDic[term].Add(fileName);
+                    indexDic[term].Add(fileName);
                 }
             }
         }
-        foreach (var term in InvertedIndexDic.Keys)
+        foreach (var term in indexDic.Keys)
         {
-            InvertedIndexDic[term].Sort();
+            indexDic[term].Sort();
         }
     }
-    public static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
+    public string Search(List<List<string>> queryBundle)
+    {
+        return GetSearchResult(queryBundle, indexDic);
+    }
+    private static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
     {
         var mustHaveTerms = queryBundle[0];
         var atLeastOneTerms = queryBundle[1];

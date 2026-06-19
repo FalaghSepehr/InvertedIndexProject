@@ -1,4 +1,4 @@
-public static class ListExtensions
+public static class Extensions
 {
     public static List<string> FilterTerms(this List<string> terms)
     {
