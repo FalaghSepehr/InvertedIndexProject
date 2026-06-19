@@ -9,17 +9,17 @@ class Program
 {
     static void Main(string[] args)
     {
-        var myInvertedIndex = new InvertedIndex(AppUtility.documentPaths);
-        StreamWriter writer = new StreamWriter(AppUtility.outputPath);
+        var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
+        StreamWriter writer = new StreamWriter(AppUtility.Paths.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
             writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
         }
-        Console.WriteLine($"Index written to {AppUtility.outputPath}");
+        Console.WriteLine($"Index written to {AppUtility.Paths.outputPath}");
         Console.Write("Search: ");
-        Console.WriteLine(GetSearchResult(GetQueryBundle(), myInvertedIndex.InvertedIndexDic));
+        Console.WriteLine(GetSearchResult(ParseQueryBundle(), myInvertedIndex.InvertedIndexDic));
     }
-    public static List<List<string>> GetQueryBundle()
+    public static List<List<string>> ParseQueryBundle()
     {
         string query = Console.ReadLine().Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -59,15 +59,12 @@ class Program
         var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, invertedIndex);
         var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, invertedIndex);
 
-        var resault = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, invertedIndex);
-        if (resault.Count == 0)
+        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, invertedIndex);
+        if (result.Count == 0)
         {
             return "No results!";
         }
-        else
-        {
-            return string.Join(", ", resault);
-        }
+        return string.Join(", ", result);
     }
     private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
     {
