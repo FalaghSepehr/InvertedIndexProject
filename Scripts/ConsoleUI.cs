@@ -22,22 +22,29 @@ public static class ConsoleUI
     }
     private static void HandleInput(InvertedIndex invertedIndex, out bool shouldExit)
     {
-        int menuSelect = int.Parse(Console.ReadLine());
-        switch (menuSelect)
+        if (int.TryParse(Console.ReadLine(), out int menuSelect))
         {
-            case 1:
-                Console.Write("Search: ");
-                Console.WriteLine(invertedIndex.Search(QueryParser.ParseQueryBundle()));
-                shouldExit = false;
-                break;
-            case 2:
-                System.Console.WriteLine("GoodBye!");
-                shouldExit = true;
-                break;
-            default:
-                System.Console.WriteLine("Invalid Input!");
-                shouldExit = false;
-                break;
+            switch (menuSelect)
+            {
+                case 1:
+                    Console.Write("Search: ");
+                    Console.WriteLine(invertedIndex.Search(QueryParser.ParseQueryBundle()));
+                    shouldExit = false;
+                    break;
+                case 2:
+                    System.Console.WriteLine("GoodBye!");
+                    shouldExit = true;
+                    break;
+                default:
+                    System.Console.WriteLine("Invalid Number!");
+                    shouldExit = false;
+                    break;
+            }
+        }
+        else
+        {
+            System.Console.WriteLine("Invalid Input!");
+            shouldExit = false;
         }
     }
 }
