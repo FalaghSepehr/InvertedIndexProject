@@ -51,46 +51,22 @@ class Program
     }
     public static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
     {
-        var result = new List<string>();
-        var mustHaveDocs = new List<string>();
-        var atLeastOneDocs = new List<string>();
-        var mustNotHaveDocs = new List<string>();
-
         var mustHaveTerms = queryBundle[0];
         var atLeastOneTerms = queryBundle[1];
         var mustNotHaveTerms = queryBundle[2];
 
-        mustHaveDocs = IntersectTermDocs(mustHaveTerms, invertedIndex);
-        atLeastOneDocs = UnionTermDocs(atLeastOneTerms, invertedIndex);
-        mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, invertedIndex);
+        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, invertedIndex);
+        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, invertedIndex);
+        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, invertedIndex);
 
-        if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
-        {
-            if (mustNotHaveTerms.Count != 0)
-            {
-                result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
-            }
-        }
-        else if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count != 0)
-        {
-            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
-        }
-        else if (mustHaveDocs.Count != 0 && atLeastOneDocs.Count != 0)
-        {
-            result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
-        }
-        else if (mustHaveDocs.Count == 0 || atLeastOneDocs.Count == 0)
-        {
-            result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
-        }
-
-        if (result.Count == 0)
+        var resault = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, invertedIndex);
+        if (resault.Count == 0)
         {
             return "No results!";
         }
         else
         {
-            return string.Join(", ", result);
+            return string.Join(", ", resault);
         }
     }
     private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
@@ -128,5 +104,29 @@ class Program
                 result.AddRange(documents);
         }
         return result.Distinct().ToList();
+    }
+    private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, List<string>> invertedIndex)
+    {
+        var result = new List<string>();
+        if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
+        {
+            if (mustNotHaveTerms.Count != 0)
+            {
+                result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
+            }
+        }
+        else if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count != 0)
+        {
+            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
+        }
+        else if (mustHaveDocs.Count != 0 && atLeastOneDocs.Count != 0)
+        {
+            result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+        }
+        else if (mustHaveDocs.Count == 0 || atLeastOneDocs.Count == 0)
+        {
+            result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+        }
+        return result;
     }
 }
