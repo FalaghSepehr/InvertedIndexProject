@@ -1,31 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using PorterStemmer.Stemmers;
+﻿global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
 
 namespace InvertedIndex_Program;
-
-public static class AppConstatnts
-{
-    public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
-    public readonly static string outputPath = Path.Combine(projectDir, "myOutputs/inverted_index.txt");
-    public readonly static char[] symbolsAndNumbers = File.ReadAllText(Path.Combine(projectDir, "AppConstants/symbolsAndNumbers")).Where(c => !char.IsWhiteSpace(c)).ToArray();
-    public readonly static string[] stopWords = File.ReadAllText(Path.Combine(projectDir, "AppConstants/stopWords")).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-    public static string[] documentPaths = Directory.GetFiles(Path.Combine(projectDir, "Documents"));
-}
-
 class Program
 {
     static void Main(string[] args)
     {
-        var myInvertedIndex = new InvertedIndex(AppConstatnts.documentPaths);
-        StreamWriter writer = new StreamWriter(AppConstatnts.outputPath);
+        var myInvertedIndex = new InvertedIndex(AppUtility.documentPaths);
+        StreamWriter writer = new StreamWriter(AppUtility.outputPath);
         foreach (var pair in myInvertedIndex.InvertedIndexDic)
         {
             writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
         }
-        Console.WriteLine($"Index written to {AppConstatnts.outputPath}");
+        Console.WriteLine($"Index written to {AppUtility.outputPath}");
         Console.Write("Search: ");
         Console.WriteLine(GetSearchResult(GetQueryBundle(), myInvertedIndex.InvertedIndexDic));
     }
@@ -38,18 +27,18 @@ class Program
         var mustNotHaveTerms = new List<string>();
 
         foreach (string item in queryArray)
-        {
-            if (item[0] == '+')
+        {   
+            switch (item[0])
             {
-                atLeastOneTerms.Add(item.Substring(1));
-            }
-            else if (item[0] == '-')
-            {
-                mustNotHaveTerms.Add(item.Substring(1));
-            }
-            else
-            {
-                mustHaveTerms.Add(item);
+                case '+':
+                    atLeastOneTerms.Add(item.Substring(1));
+                    break;
+                case '-':
+                    mustNotHaveTerms.Add(item.Substring(1));
+                    break;
+                default:
+                    mustHaveTerms.Add(item);
+                    break;
             }
         }
         var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
@@ -133,57 +122,5 @@ class Program
         {
             return string.Join(", ", result);
         }
-    }
-
-}
-public class InvertedIndex
-{
-    public Dictionary<string, List<string>> InvertedIndexDic { get; set; } = new();
-    public InvertedIndex(string[] fileDirectories)
-    {
-
-        foreach (string docFileDir in fileDirectories)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(docFileDir);
-            string content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList().FilterTerms();
-
-            foreach (string term in terms)
-            {
-                if (!InvertedIndexDic.ContainsKey(term))
-                {
-                    InvertedIndexDic[term] = new List<string>();
-                }
-                if (!InvertedIndexDic[term].Contains(fileName))
-                {
-                    InvertedIndexDic[term].Add(fileName);
-                }
-            }
-        }
-        foreach (var term in InvertedIndexDic.Keys)
-        {
-            InvertedIndexDic[term].Sort();
-        }
-    }
-}
-public static class StemmerHelper
-{
-    public static readonly EnglishStemmer Stemmer = new();
-
-    public static string Stem(string word)
-    {
-        return Stemmer.GetStem(word);
-    }
-}
-public static class ListExtensions
-{
-    public static List<string> FilterTerms(this List<string> terms)
-    {
-        return terms
-            .SelectMany(t => AppConstatnts.symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries))
-            .Where(t => !AppConstatnts.stopWords.Contains(t))
-            .Where(t => t.Length > 2)
-            .Select(StemmerHelper.Stem).ToList();
     }
 }
