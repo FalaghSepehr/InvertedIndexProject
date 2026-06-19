@@ -3,10 +3,10 @@ public static class ListExtensions
     public static List<string> FilterTerms(this List<string> terms)
     {
         return terms
-            .SelectMany(t => AppUtility.symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
+            .SelectMany(t => AppUtility.TextProcessing.symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
             .Split(' ', StringSplitOptions.RemoveEmptyEntries))
-            .Where(t => !AppUtility.stopWords.Contains(t))
+            .Where(t => !AppUtility.TextProcessing.stopWords.Contains(t))
             .Where(t => t.Length > 2)
-            .Select(AppUtility.Stem).ToList();
+            .Select(AppUtility.TextProcessing.Stem).ToList();
     }
 }
