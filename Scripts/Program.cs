@@ -4,6 +4,7 @@ global using System.IO;
 global using System.Linq;
 
 namespace InvertedIndex_Program;
+
 class Program
 {
     static void Main(string[] args)
@@ -27,7 +28,7 @@ class Program
         var mustNotHaveTerms = new List<string>();
 
         foreach (string item in queryArray)
-        {   
+        {
             switch (item[0])
             {
                 case '+':
@@ -59,40 +60,9 @@ class Program
         var atLeastOneTerms = queryBundle[1];
         var mustNotHaveTerms = queryBundle[2];
 
-        bool first = true;
-        foreach (var term in mustHaveTerms)
-        {
-            if (invertedIndex.TryGetValue(term, out var documents))
-            {
-                if (first)
-                {
-                    mustHaveDocs = documents;
-                    first = false;
-                }
-                else
-                {
-                    mustHaveDocs = mustHaveDocs.Intersect(documents).ToList();
-                }
-            }
-            else
-            {
-                mustHaveDocs.Clear();
-            }
-        }
-        foreach (var term in atLeastOneTerms)
-        {
-            if (invertedIndex.TryGetValue(term, out var documents))
-            {
-                atLeastOneDocs = atLeastOneDocs.Union(documents).ToList();
-            }
-        }
-        foreach (var term in mustNotHaveTerms)
-        {
-            if (invertedIndex.TryGetValue(term, out var documents))
-            {
-                mustNotHaveDocs = mustNotHaveDocs.Union(documents).ToList();
-            }
-        }
+        mustHaveDocs = IntersectTermDocs(mustHaveTerms, invertedIndex);
+        atLeastOneDocs = UnionTermDocs(atLeastOneTerms, invertedIndex);
+        mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, invertedIndex);
 
         if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
         {
@@ -122,5 +92,41 @@ class Program
         {
             return string.Join(", ", result);
         }
+    }
+    private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
+    {
+        var result = new List<string>();
+
+        bool first = true;
+        foreach (var term in terms)
+        {
+            if (invertedIndex.TryGetValue(term, out var documents))
+            {
+                if (first)
+                {
+                    result = documents;
+                    first = false;
+                }
+                else
+                {
+                    result = result.Intersect(documents).ToList();
+                }
+            }
+            else
+            {
+                result.Clear();
+            }
+        }
+        return result;
+    }
+    private static List<string> UnionTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
+    {
+        var result = new List<string>();
+        foreach (var term in terms)
+        {
+            if (invertedIndex.TryGetValue(term, out var documents))
+                result.AddRange(documents);
+        }
+        return result.Distinct().ToList();
     }
 }
