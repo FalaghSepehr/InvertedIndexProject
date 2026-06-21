@@ -28,7 +28,7 @@ public static class ConsoleUI
             {
                 case 1:
                     Console.Write("Search: ");
-                    Console.WriteLine(invertedIndex.Search(QueryParser.ParseQueryBundle()));
+                    Console.WriteLine(invertedIndex.Search(QueryParser.ParseQuery()));
                     shouldExit = false;
                     break;
                 case 2:

@@ -1,0 +1,36 @@
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/InvertedIndex Program
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/InvertedIndex Program.deps.json
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/InvertedIndex Program.runtimeconfig.json
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/InvertedIndex Program.pdb
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.GeneratedMSBuildEditorConfig.editorconfig
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.AssemblyInfoInputs.cache
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.AssemblyInfo.cs
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.csproj.CoreCompileInputs.cache
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/refint/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.pdb
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.genruntimeconfig.cache
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/ref/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/Porter2StemmerStandard.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/bin/Debug/net10.0/PorterStemmer.dll
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/InvertedIndex Program.csproj.AssemblyReference.cache
+/home/skygap/Desktop/C#Learn/InvertedIndex Program/obj/Debug/net10.0/Inverted.B9154DF8.Up2Date
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/InvertedIndex Program
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/InvertedIndex Program.deps.json
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/InvertedIndex Program.runtimeconfig.json
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/InvertedIndex Program.pdb
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/Porter2StemmerStandard.dll
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/bin/Debug/net10.0/PorterStemmer.dll
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.csproj.AssemblyReference.cache
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.GeneratedMSBuildEditorConfig.editorconfig
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.AssemblyInfoInputs.cache
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.AssemblyInfo.cs
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.csproj.CoreCompileInputs.cache
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/Inverted.B9154DF8.Up2Date
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/refint/InvertedIndex Program.dll
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.pdb
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/InvertedIndex Program.genruntimeconfig.cache
+/home/skygap/Desktop/C#Learn/InvertedIndexProgram/obj/Debug/net10.0/ref/InvertedIndex Program.dll

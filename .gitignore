@@ -1,6 +1,6 @@
-/obj
-/bin
-InvertedIndex Program.csproj.lscache
-/Documents
-/myOutputs
+#/obj
+#/bin
+#InvertedIndex Program.csproj.lscache
+#/Documents
+#/myOutputs
 

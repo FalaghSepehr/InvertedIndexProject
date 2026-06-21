@@ -1,6 +1,6 @@
 public static class QueryParser
 {
-    public static List<List<string>> ParseQueryBundle()
+    public static List<List<string>> ParseQuery()
     {
         string query = Console.ReadLine().Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
