@@ -1,0 +1,59 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "InvertedIndexProgram/1.0.0": {
+        "dependencies": {
+          "PorterStemmer": "1.0.0"
+        },
+        "runtime": {
+          "InvertedIndexProgram.dll": {}
+        }
+      },
+      "Porter2StemmerStandard/1.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Porter2StemmerStandard.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "PorterStemmer/1.0.0": {
+        "dependencies": {
+          "Porter2StemmerStandard": "1.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/PorterStemmer.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "InvertedIndexProgram/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Porter2StemmerStandard/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gkUfuohP9+JBXsffFmxaMaixSLy3P6L05zjagvodV2pAxl+ZC3NVmA1eJJzSFbQtqiWNlVB+SjwN2HAgKtRdBA==",
+      "path": "porter2stemmerstandard/1.0.0",
+      "hashPath": "porter2stemmerstandard.1.0.0.nupkg.sha512"
+    },
+    "PorterStemmer/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JoknQo+NTVJhN+vbzs71wVsIDoKL9S/unO2z0fqS2Xs5RVeSsNgPN7halXv1KHsFarFo4r3VpAcbbS+G8cAHEA==",
+      "path": "porterstemmer/1.0.0",
+      "hashPath": "porterstemmer.1.0.0.nupkg.sha512"
+    }
+  }
+}
