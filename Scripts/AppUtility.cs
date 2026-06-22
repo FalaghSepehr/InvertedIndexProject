@@ -32,9 +32,28 @@ public static class AppUtility
     }
     public static class TextProcessing
     {
-        public readonly static char[] symbolsAndNumbers = File.ReadAllText(Path.Combine(Paths.projectDir, "AppConstants/symbolsAndNumbers")).Where(c => !char.IsWhiteSpace(c)).ToArray();
-        public readonly static HashSet<string> stopWords = new HashSet<string>(File.ReadAllText(Path.Combine(Paths.projectDir, "AppConstants/stopWords")).Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        public readonly static char[] symbolsAndNumbers = LoadSymbolsAndNumbers();
+        public readonly static string[] stopWords = LoadStopWords();
         public static readonly EnglishStemmer Stemmer = new();
         public static string Stem(string word) => Stemmer.GetStem(word);
+        private static char[] LoadSymbolsAndNumbers()
+        {
+            var path = Path.Combine(Paths.projectDir, "AppConstants/symbolsAndNumbers");
+            if (!File.Exists(path))
+            {
+                throw new InvalidOperationException($"Required file not found: {path}");
+            }
+            return File.ReadAllText(path).Where(c => !char.IsWhiteSpace(c)).ToArray();
+        }
+
+        private static string[] LoadStopWords()
+        {
+            var path = Path.Combine(Paths.projectDir, "AppConstants/stopWords");
+            if (!File.Exists(path))
+            {
+                throw new InvalidOperationException($"Required file not found: {path}");
+            }
+            return File.ReadAllText(path).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        }
     }
 }
