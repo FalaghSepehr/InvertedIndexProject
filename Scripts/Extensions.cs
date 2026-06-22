@@ -1,3 +1,5 @@
+namespace InvertedIndex_Program;
+
 public static class Extensions
 {
     public static List<string> FilterTerms(this List<string> terms)

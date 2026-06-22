@@ -1,3 +1,5 @@
+namespace InvertedIndex_Program;
+
 public static class ConsoleUI
 {
     public static void Run(InvertedIndex invertedIndex)

@@ -1,11 +1,14 @@
 using PorterStemmer.Stemmers;
+
+namespace InvertedIndex_Program;
+
 public static class AppUtility
 {
     public static class Paths
     {
         public readonly static string projectDir = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName;
         public readonly static string outputPath = Path.Combine(projectDir, "myOutputs/inverted_index.txt");
-        public static string[] documentPaths = Directory.GetFiles(Path.Combine(projectDir, "Documents"));
+        public readonly static string[] documentPaths = Directory.GetFiles(Path.Combine(projectDir, "Documents"));
     }
     public static class TextProcessing
     {

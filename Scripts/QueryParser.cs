@@ -1,3 +1,5 @@
+namespace InvertedIndex_Program;
+
 public static class QueryParser
 {
     public static List<List<string>> ParseQuery()

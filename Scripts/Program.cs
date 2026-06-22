@@ -10,10 +10,10 @@ class Program
     static void Main(string[] args)
     {
         var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
-        
+
         using (var writer = new StreamWriter(AppUtility.Paths.outputPath))
         {
-            foreach (var pair in myInvertedIndex.indexDic)
+            foreach (var pair in myInvertedIndex.IndexDic)
             {
                 writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
             }

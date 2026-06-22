@@ -1,6 +1,8 @@
+namespace InvertedIndex_Program;
+
 public class InvertedIndex
 {
-    public Dictionary<string, List<string>> indexDic { get; set; } = new();
+    public Dictionary<string, List<string>> IndexDic { get; private set; } = new();
     public InvertedIndex(string[] fileDirectories)
     {
         foreach (string docFileDir in fileDirectories)
@@ -11,24 +13,24 @@ public class InvertedIndex
 
             foreach (string term in terms)
             {
-                if (!indexDic.ContainsKey(term))
+                if (!IndexDic.ContainsKey(term))
                 {
-                    indexDic[term] = new List<string>();
+                    IndexDic[term] = new List<string>();
                 }
-                if (!indexDic[term].Contains(fileName))
+                if (!IndexDic[term].Contains(fileName))
                 {
-                    indexDic[term].Add(fileName);
+                    IndexDic[term].Add(fileName);
                 }
             }
         }
-        foreach (var term in indexDic.Keys)
+        foreach (var term in IndexDic.Keys)
         {
-            indexDic[term].Sort();
+            IndexDic[term].Sort();
         }
     }
     public string Search(List<List<string>> queryBundle)
     {
-        return GetSearchResult(queryBundle, indexDic);
+        return GetSearchResult(queryBundle, IndexDic);
     }
     private static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
     {
