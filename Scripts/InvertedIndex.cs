@@ -13,11 +13,12 @@ public class InvertedIndex
 
             foreach (string term in terms)
             {
-                if (!IndexDic.ContainsKey(term))
+                if (!IndexDic.TryGetValue(term, out var documents))
                 {
-                    IndexDic[term] = new HashSet<string>();
+                    documents = new HashSet<string>();
+                    IndexDic[term] = documents;
                 }
-                IndexDic[term].Add(fileName);
+                documents.Add(fileName);
             }
         }
     }
