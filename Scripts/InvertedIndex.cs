@@ -9,7 +9,7 @@ public class InvertedIndex
         {
             string fileName = Path.GetFileNameWithoutExtension(docFileDir);
             string content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = content.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList().FilterTerms();
+            List<string> terms = content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList().FilterTerms();
 
             foreach (string term in terms)
             {
@@ -63,7 +63,7 @@ public class InvertedIndex
             }
             else
             {
-                result.Clear();
+                return new List<string>();
             }
         }
         return result;
