@@ -11,6 +11,9 @@ class Program
     {
         var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
 
+        var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
+
+        Directory.CreateDirectory(Path.GetDirectoryName(AppUtility.Paths.outputPath));
         using (var writer = new StreamWriter(AppUtility.Paths.outputPath))
         {
             foreach (var pair in myInvertedIndex.IndexDic)
