@@ -2,7 +2,7 @@ public static class QueryParser
 {
     public static List<List<string>> ParseQuery()
     {
-        string query = Console.ReadLine().Trim().ToLower();
+        string query = (Console.ReadLine() ?? string.Empty).Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var mustHaveTerms = new List<string>();
         var atLeastOneTerms = new List<string>();
@@ -13,10 +13,10 @@ public static class QueryParser
             switch (item[0])
             {
                 case '+':
-                    atLeastOneTerms.Add(item.Substring(1));
+                    if (item.Length > 1) atLeastOneTerms.Add(item.Substring(1));
                     break;
                 case '-':
-                    mustNotHaveTerms.Add(item.Substring(1));
+                    if (item.Length > 1) mustNotHaveTerms.Add(item.Substring(1));
                     break;
                 default:
                     mustHaveTerms.Add(item);

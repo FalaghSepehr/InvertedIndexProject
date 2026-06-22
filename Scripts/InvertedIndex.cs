@@ -58,7 +58,7 @@ public class InvertedIndex
             {
                 if (first)
                 {
-                    result = documents;
+                    result = new List<string>(documents);
                     first = false;
                 }
                 else
