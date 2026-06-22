@@ -2,7 +2,7 @@ namespace InvertedIndex_Program;
 
 public class InvertedIndex
 {
-    public Dictionary<string, List<string>> IndexDic { get; private set; } = new();
+    public Dictionary<string, HashSet<string>> IndexDic { get; private set; } = new();
     public InvertedIndex(string[] fileDirectories)
     {
         foreach (string docFileDir in fileDirectories)
@@ -15,24 +15,17 @@ public class InvertedIndex
             {
                 if (!IndexDic.ContainsKey(term))
                 {
-                    IndexDic[term] = new List<string>();
+                    IndexDic[term] = new HashSet<string>();
                 }
-                if (!IndexDic[term].Contains(fileName))
-                {
-                    IndexDic[term].Add(fileName);
-                }
+                IndexDic[term].Add(fileName); // HashSet silently ignores duplicates — no Contains needed
             }
-        }
-        foreach (var term in IndexDic.Keys)
-        {
-            IndexDic[term].Sort();
         }
     }
     public string Search(List<List<string>> queryBundle)
     {
         return GetSearchResult(queryBundle, IndexDic);
     }
-    private static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, List<string>> invertedIndex)
+    private static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, HashSet<string>> invertedIndex)
     {
         var mustHaveTerms = queryBundle[0];
         var atLeastOneTerms = queryBundle[1];
@@ -49,7 +42,7 @@ public class InvertedIndex
         }
         return string.Join(", ", result);
     }
-    private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
+    private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
     {
         var result = new List<string>();
 
@@ -75,7 +68,7 @@ public class InvertedIndex
         }
         return result;
     }
-    private static List<string> UnionTermDocs(List<string> terms, Dictionary<string, List<string>> invertedIndex)
+    private static List<string> UnionTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
     {
         var result = new List<string>();
         foreach (var term in terms)
@@ -85,7 +78,7 @@ public class InvertedIndex
         }
         return result.Distinct().ToList();
     }
-    private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, List<string>> invertedIndex)
+    private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, HashSet<string>> invertedIndex)
     {
         var result = new List<string>();
         if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
