@@ -17,7 +17,7 @@ public class InvertedIndex
                 {
                     IndexDic[term] = new HashSet<string>();
                 }
-                IndexDic[term].Add(fileName); // HashSet silently ignores duplicates — no Contains needed
+                IndexDic[term].Add(fileName);
             }
         }
     }
@@ -40,7 +40,7 @@ public class InvertedIndex
         {
             return "No results!";
         }
-        return string.Join(", ", result);
+        return string.Join(", ", result.OrderBy(v => v));
     }
     private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
     {

@@ -15,7 +15,7 @@ class Program
         {
             foreach (var pair in myInvertedIndex.IndexDic)
             {
-                writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value)}");
+                writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}");
             }
         }
         Console.WriteLine($"Index written to {AppUtility.Paths.outputPath}");
