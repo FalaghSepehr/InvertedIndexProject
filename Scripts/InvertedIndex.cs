@@ -1,5 +1,9 @@
-namespace InvertedIndex_Program;
-
+namespace InvertedIndexProgram;
+/// <summary>
+/// Builds an inverted index based off of a list of paths to documents.
+/// Supports stemming, stop-word removal ,symbol and number removal.
+/// Supports prefix-based search operators (+, -).
+/// </summary>
 public class InvertedIndex
 {
     public Dictionary<string, HashSet<string>> IndexDic { get; private set; } = new();
@@ -22,6 +26,18 @@ public class InvertedIndex
             }
         }
     }
+    /// <summary>
+    /// Searches through the index depending on a query bundle.
+    /// </summary>
+    /// <param name="queryBundle">
+    /// A list containing three categorized term lists:
+    /// <list type="bullet">
+    /// <item><description>[0] Must-have terms — the word must be present in the document.</description></item>
+    /// <item><description>[1] At-least-one terms — at least one of these words must be present.</description></item>
+    /// <item><description>[2] Must-not-have terms — documents containing any of these are excluded.</description></item>
+    /// </list>
+    /// </param>
+    /// <returns>The Resulted document names seperated by commas.</returns>
     public string Search(List<List<string>> queryBundle)
     {
         return GetSearchResult(queryBundle, IndexDic);
@@ -79,13 +95,13 @@ public class InvertedIndex
         }
         return result.Distinct().ToList();
     }
-    
-    // Combines must-have (intersection) and at-least-one (union) results,
-    // then excludes must-not-have documents. Special cases:
-    // - No matches found for any required terms → no results (unless only exclusion terms exist)
-    // - Only exclusion terms specified → start with all documents then exclude
     private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, HashSet<string>> invertedIndex)
     {
+        // Combines must-have (intersection) and at-least-one (union) results,
+        // then excludes must-not-have documents. Special cases:
+        // - No matches found for any required terms → no results (unless only exclusion terms exist)
+        // - Only exclusion terms specified → start with all documents then exclude
+
         var result = new List<string>();
         if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
         {

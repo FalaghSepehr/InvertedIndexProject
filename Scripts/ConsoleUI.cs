@@ -1,7 +1,13 @@
-namespace InvertedIndex_Program;
-
+namespace InvertedIndexProgram;
+/// <summary>
+/// Prints the menu and handles menu input.
+/// </summary>
 public static class ConsoleUI
 {
+    /// <summary>
+    /// Runs The Console UI. Requires an inverted index to function.
+    /// </summary>
+    /// <param name="invertedIndex">Index to Search in.</param>
     public static void Run(InvertedIndex invertedIndex)
     {
         do
@@ -34,11 +40,11 @@ public static class ConsoleUI
                     shouldExit = false;
                     break;
                 case 2:
-                    System.Console.WriteLine("GoodBye!");
+                    Console.WriteLine("GoodBye!");
                     shouldExit = true;
                     break;
                 default:
-                    System.Console.WriteLine("Invalid Number!");
+                    Console.WriteLine("Invalid Number!");
                     shouldExit = false;
                     break;
             }

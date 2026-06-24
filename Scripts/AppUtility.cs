@@ -1,7 +1,9 @@
 using PorterStemmer.Stemmers;
 
-namespace InvertedIndex_Program;
-
+namespace InvertedIndexProgram;
+/// <summary>
+/// Holds file paths and helper methods.
+/// </summary>
 public static class AppUtility
 {
     public static class Paths
