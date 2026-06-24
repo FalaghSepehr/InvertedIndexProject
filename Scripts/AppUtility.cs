@@ -36,7 +36,13 @@ public static class AppUtility
     {
         public readonly static char[] symbolsAndNumbers = LoadSymbolsAndNumbers();
         public readonly static HashSet<string> stopWords = LoadStopWords();
-        public static readonly EnglishStemmer Stemmer = new();
+        private static readonly EnglishStemmer Stemmer = new();
+        /// <summary>
+        /// Stems an English word to its root form using the Porter algorithm
+        /// (via the PorterStemmer NuGet package).
+        /// </summary>
+        /// <param name="word">The word to stem.</param>
+        /// <returns>The stemmed word (e.g., "running" → "run").</returns>
         public static string Stem(string word) => Stemmer.GetStem(word);
         private static char[] LoadSymbolsAndNumbers()
         {
