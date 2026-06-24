@@ -79,6 +79,11 @@ public class InvertedIndex
         }
         return result.Distinct().ToList();
     }
+    
+    // Combines must-have (intersection) and at-least-one (union) results,
+    // then excludes must-not-have documents. Special cases:
+    // - No matches found for any required terms → no results (unless only exclusion terms exist)
+    // - Only exclusion terms specified → start with all documents then exclude
     private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, HashSet<string>> invertedIndex)
     {
         var result = new List<string>();
