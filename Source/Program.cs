@@ -11,29 +11,20 @@ class Program
     private static readonly string ProjectDir = GetProjectDirectory();
     static void Main(string[] args)
     {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(ProjectDir)
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .Build();
+        var config = LoadConfig();
 
-        var appSettings = configuration.GetSection("AppSettings");
-        var docsDir = appSettings["DocumentsPath"];
-        var outputPath = appSettings["OutputPath"];
-        var symbolsAndNumbers = LoadSymbolsAndNumbers(appSettings["SymbolsAndNumbersPath"]);
-        var stopWords = LoadStopWords(appSettings["StopWordsPath"]);
+        ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
+        var invertedIndex = new InvertedIndex(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
 
-        ITextProcessor simpleTextProcessor = new SimpleTextProcessor(symbolsAndNumbers, stopWords);
-        var invertedIndex = new InvertedIndex(GetDocumentPathsArray(docsDir), simpleTextProcessor);
-
-        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-        using (var writer = new StreamWriter(outputPath))
+        Directory.CreateDirectory(Path.GetDirectoryName(config.OutputPath));
+        using (var writer = new StreamWriter(config.OutputPath))
         {
             foreach (var pair in invertedIndex.IndexDic)
             {
                 writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}");
             }
         }
-        Console.WriteLine($"Index written to {outputPath}");
+        Console.WriteLine($"Index written to {config.OutputPath}");
 
         var queryParser = new QueryParser(simpleTextProcessor);
         var consoleUI = new ConsoleUI(invertedIndex, queryParser);
@@ -66,7 +57,6 @@ class Program
         }
         return File.ReadAllText(path).Where(c => !char.IsWhiteSpace(c)).ToArray();
     }
-
     private static HashSet<string> LoadStopWords(string path)
     {
         if (!File.Exists(path))
@@ -75,4 +65,28 @@ class Program
         }
         return new HashSet<string>(File.ReadAllText(path).Split(' ', StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
     }
+    private static AppConfig LoadConfig()
+    {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(ProjectDir)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+        var appSettings = configuration.GetSection("AppSettings");
+        
+        return new AppConfig
+        {
+            DocumentsDir = appSettings["DocumentsPath"],
+            OutputPath = appSettings["OutputPath"],
+            SymbolsAndNumbers = LoadSymbolsAndNumbers(appSettings["SymbolsAndNumbersPath"]),
+            StopWords = LoadStopWords(appSettings["StopWordsPath"])
+        };
+    }
+}
+record AppConfig
+{
+    public string DocumentsDir { get; init; }
+    public string OutputPath { get; init; }
+    public char[] SymbolsAndNumbers { get; init; }
+    public HashSet<string> StopWords { get; init; }
 }
