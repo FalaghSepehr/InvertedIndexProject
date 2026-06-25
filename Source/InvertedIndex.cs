@@ -6,14 +6,17 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class InvertedIndex
 {
+    private readonly ITextProcessor _textProcessor;
     public Dictionary<string, HashSet<string>> IndexDic { get; private set; } = new();
-    public InvertedIndex(string[] fileDirectories)
+    public InvertedIndex(string[] docPaths, ITextProcessor textProcessor)
     {
-        foreach (string docFileDir in fileDirectories)
+        _textProcessor = textProcessor;
+
+        foreach (string docFileDir in docPaths)
         {
             string fileName = Path.GetFileNameWithoutExtension(docFileDir);
             string content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList().FilterTerms();
+            List<string> terms = _textProcessor.FilterTerms(content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList());
 
             foreach (string term in terms)
             {

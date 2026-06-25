@@ -1,26 +1,35 @@
+using Microsoft.VisualBasic;
+
 namespace InvertedIndexProgram;
 /// <summary>
 /// Prints the menu and handles menu input.
 /// </summary>
-public static class ConsoleUI
+public class ConsoleUI
 {
+    private readonly QueryParser _queryParser;
+    private readonly InvertedIndex _invertedIndex;
+    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser)
+    {
+        _queryParser = queryParser;
+        _invertedIndex = invertedIndex;
+    }
     /// <summary>
     /// Runs The Console UI. Requires an inverted index to function.
     /// </summary>
     /// <param name="invertedIndex">Index to Search in.</param>
-    public static void Run(InvertedIndex invertedIndex)
+    public void Run()
     {
         do
         {
             ShowMenu();
-            HandleInput(invertedIndex, out var shouldExit);
+            HandleInput(_invertedIndex, out var shouldExit);
             if (shouldExit)
             {
                 break;
             }
         } while (true);
     }
-    private static void ShowMenu()
+    private void ShowMenu()
     {
         System.Console.WriteLine("=================");
         System.Console.WriteLine("Select: ");
@@ -28,7 +37,7 @@ public static class ConsoleUI
         System.Console.WriteLine("2. Exit");
         System.Console.WriteLine("=================");
     }
-    private static void HandleInput(InvertedIndex invertedIndex, out bool shouldExit)
+    private void HandleInput(InvertedIndex invertedIndex, out bool shouldExit)
     {
         if (int.TryParse(Console.ReadLine(), out int menuSelect))
         {
@@ -36,7 +45,7 @@ public static class ConsoleUI
             {
                 case 1:
                     Console.Write("Search: ");
-                    Console.WriteLine(invertedIndex.Search(QueryParser.ParseQuery()));
+                    Console.WriteLine(invertedIndex.Search(_queryParser.ParseQuery()));
                     shouldExit = false;
                     break;
                 case 2:

@@ -4,8 +4,13 @@ namespace InvertedIndexProgram;
 /// Supports stemming, stop-word removal ,symbol and number removal.
 /// Supports prefix-based search operators (+, -).
 /// </summary>
-public static class QueryParser
+public class QueryParser
 {
+    private readonly ITextProcessor _textProcessor;
+    public QueryParser(ITextProcessor textProcessor)
+    {
+        _textProcessor = textProcessor;
+    }
     /// <summary>
     /// Reads a query from the console and parses it into categorized term lists.
     /// Words prefixed with '+' are at-least-one terms, '-' are must-not-have terms,
@@ -20,7 +25,7 @@ public static class QueryParser
     /// <item><description>[2] Must-not-have terms — documents containing any of these are excluded.</description></item>
     /// </list>
     /// </returns>
-    public static List<List<string>> ParseQuery()
+    public List<List<string>> ParseQuery()
     {
         string query = (Console.ReadLine() ?? string.Empty).Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -46,7 +51,7 @@ public static class QueryParser
         var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
         for (int i = 0; i < queryBundle.Count; i++)
         {
-            queryBundle[i] = queryBundle[i].FilterTerms();
+            queryBundle[i] = _textProcessor.FilterTerms(queryBundle[i]);
         }
         return queryBundle;
     }
