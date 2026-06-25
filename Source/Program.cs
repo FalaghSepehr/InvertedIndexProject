@@ -10,7 +10,7 @@ class Program
     static void Main(string[] args)
     {
         var myInvertedIndex = new InvertedIndex(AppUtility.Paths.documentPaths);
-        
+
         Directory.CreateDirectory(Path.GetDirectoryName(AppUtility.Paths.outputPath));
         using (var writer = new StreamWriter(AppUtility.Paths.outputPath))
         {
@@ -23,5 +23,5 @@ class Program
 
         ConsoleUI.Run(myInvertedIndex);
     }
-     
+
 }
