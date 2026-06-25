@@ -46,7 +46,7 @@ public static class AppUtility
         public static string Stem(string word) => Stemmer.GetStem(word);
         private static char[] LoadSymbolsAndNumbers()
         {
-            var path = Path.Combine(Paths.projectDir, "AppConstants/symbolsAndNumbers");
+            var path = Path.Combine(Paths.projectDir, "AppConstants/symbolsAndNumbers.txt");
             if (!File.Exists(path))
             {
                 throw new InvalidOperationException($"Required file not found: {path}");
@@ -56,7 +56,7 @@ public static class AppUtility
 
         private static HashSet<string> LoadStopWords()
         {
-            var path = Path.Combine(Paths.projectDir, "AppConstants/stopWords");
+            var path = Path.Combine(Paths.projectDir, "AppConstants/stopWords.txt");
             if (!File.Exists(path))
             {
                 throw new InvalidOperationException($"Required file not found: {path}");
