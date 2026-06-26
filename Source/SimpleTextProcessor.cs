@@ -14,7 +14,7 @@ public class SimpleTextProcessor : ITextProcessor
     }
     public List<string> ExtractTerms(string text)
     {
-        return FilterTerms(Tokenize(text)).ToList();
+        return NormalizeTerms(Tokenize(text)).ToList();
     }
     private IEnumerable<string> Tokenize(string text)
     {
@@ -25,14 +25,21 @@ public class SimpleTextProcessor : ITextProcessor
     /// </summary>
     /// <param name="terms">Terms to apply filterring to.</param>
     /// <returns>Filtered list of terms</returns>
-    public IEnumerable<string> FilterTerms(IEnumerable<string> terms)
+    public IEnumerable<string> NormalizeTerms(IEnumerable<string> terms)
     {
         return terms
-            .SelectMany(t => _symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries))
-            .Where(t => !_stopWords.Contains(t))
-            .Where(t => t.Length > 2)
+            .Select(CleanSymbolsAndNumbers)
+            .SelectMany(t => t.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            .Where(IsIndexable)
             .Select(Stem);
+    }
+    private string CleanSymbolsAndNumbers(string term)
+    {
+        return _symbolsAndNumbers.Aggregate(term, (current, c) => current.Replace(c, ' '));
+    }
+    private bool IsIndexable(string term)
+    {
+        return !_stopWords.Contains(term) && term.Length > 2;
     }
     private static readonly EnglishStemmer Stemmer = new();
     /// <summary>

@@ -51,9 +51,9 @@ public class QueryParser
  
         return new QueryBundle
         {
-            MustHave = _textProcessor.FilterTerms(mustHaveTerms).ToList(),
-            AtLeastOne = _textProcessor.FilterTerms(atLeastOneTerms).ToList(),
-            MustNotHave = _textProcessor.FilterTerms(mustNotHaveTerms).ToList()
+            MustHave = _textProcessor.NormalizeTerms(mustHaveTerms).ToList(),
+            AtLeastOne = _textProcessor.NormalizeTerms(atLeastOneTerms).ToList(),
+            MustNotHave = _textProcessor.NormalizeTerms(mustNotHaveTerms).ToList()
         };
     }
 }
