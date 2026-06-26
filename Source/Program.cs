@@ -16,20 +16,26 @@ class Program
         ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
         var invertedIndex = new InvertedIndex(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
 
-        Directory.CreateDirectory(Path.GetDirectoryName(config.OutputPath));
-        using (var writer = new StreamWriter(config.OutputPath))
+        WriteIndexToFile(config.OutputPath, invertedIndex);
+
+        var queryParser = new QueryParser(simpleTextProcessor);
+        var consoleUI = new ConsoleUI(invertedIndex, queryParser);
+        consoleUI.Run();
+    }
+
+    private static void WriteIndexToFile(string outputPath, InvertedIndex invertedIndex)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+        using (var writer = new StreamWriter(outputPath))
         {
             foreach (var pair in invertedIndex.InvertedIndexDic)
             {
                 writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}");
             }
         }
-        Console.WriteLine($"Index written to {config.OutputPath}");
-
-        var queryParser = new QueryParser(simpleTextProcessor);
-        var consoleUI = new ConsoleUI(invertedIndex, queryParser);
-        consoleUI.Run();
+        Console.WriteLine($"Index written to {outputPath}");
     }
+
     private static string GetProjectDirectory()
     {
         var current = new DirectoryInfo(Environment.CurrentDirectory);
