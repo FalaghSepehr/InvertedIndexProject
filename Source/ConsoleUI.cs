@@ -22,7 +22,7 @@ public class ConsoleUI
         do
         {
             ShowMenu();
-            HandleInput(_invertedIndex, out var shouldExit);
+            HandleInput(out var shouldExit);
             if (shouldExit)
             {
                 break;
@@ -37,7 +37,7 @@ public class ConsoleUI
         System.Console.WriteLine("2. Exit");
         System.Console.WriteLine("=================");
     }
-    private void HandleInput(InvertedIndex invertedIndex, out bool shouldExit)
+    private void HandleInput(out bool shouldExit)
     {
         if (int.TryParse(Console.ReadLine(), out int menuSelect))
         {
@@ -45,7 +45,7 @@ public class ConsoleUI
             {
                 case 1:
                     Console.Write("Search: ");
-                    Console.WriteLine(GetResultMessage(invertedIndex));
+                    Console.WriteLine(GetResultMessage());
                     shouldExit = false;
                     break;
                 case 2:
@@ -60,13 +60,13 @@ public class ConsoleUI
         }
         else
         {
-            System.Console.WriteLine("Invalid Input!");
+            Console.WriteLine("Invalid Input!");
             shouldExit = false;
         }
     }
-    private string GetResultMessage(InvertedIndex invertedIndex)
+    private string GetResultMessage()
     {
-        var results = invertedIndex.GetSearchResult(_queryParser.ParseQuery());
+        var results = _invertedIndex.GetSearchResult(_queryParser.ParseQuery());
         return results.Count == 0 ? "No results!" : string.Join(", ", results);
     }
 }
