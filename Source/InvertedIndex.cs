@@ -50,22 +50,22 @@ public class InvertedIndex
     /// <returns>The Resulted document names seperated by commas.</returns>
     public List<string> GetSearchResult(QueryBundle queryBundle)
     {
-        var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave, _invertedIndexDic);
-        var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne, _invertedIndexDic);
-        var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave, _invertedIndexDic);
+        var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);
+        var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne);
+        var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave);
 
-        var result = BuildResult(queryBundle.MustNotHave, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, _invertedIndexDic);
+        var result = BuildResult(mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
  
         return result.OrderBy(v => v).ToList();
     }
-    private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
+    private List<string> IntersectTermDocs(List<string> terms)
     {
         var result = new List<string>();
 
         bool first = true;
         foreach (var term in terms)
         {
-            if (invertedIndex.TryGetValue(term, out var documents))
+            if (_invertedIndexDic.TryGetValue(term, out var documents))
             {
                 if (first)
                 {
@@ -84,45 +84,35 @@ public class InvertedIndex
         }
         return result;
     }
-    private static List<string> UnionTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
+    private List<string> UnionTermDocs(List<string> terms)
     {
         var result = new List<string>();
         foreach (var term in terms)
         {
-            if (invertedIndex.TryGetValue(term, out var documents))
+            if (_invertedIndexDic.TryGetValue(term, out var documents))
             {
                 result.AddRange(documents);
             }
         }
         return result.Distinct().ToList();
     }
-    private static List<string> BuildResult(List<string> mustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, Dictionary<string, HashSet<string>> invertedIndex)
+    private List<string> BuildResult(List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
     {
-        // Combines must-have (intersection) and at-least-one (union) results,
-        // then excludes must-not-have documents. Special cases:
-        // - No matches found for any required terms → no results (unless only exclusion terms exist)
-        // - Only exclusion terms specified → start with all documents then exclude
+        var allDocs = _invertedIndexDic.Values.SelectMany(d => d).Distinct();
 
-        var result = new List<string>();
-        if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
+        List<string> positiveDocs;
+        if (mustHaveDocs.Count > 0)
         {
-            if (mustNotHaveTerms.Count != 0)
-            {
-                result = invertedIndex.Values.SelectMany(list => list).Distinct().ToList();
-            }
+            positiveDocs = mustHaveDocs.Intersect(atLeastOneDocs.Count > 0 ? atLeastOneDocs : allDocs).ToList();
         }
-        else if (mustHaveDocs.Count == 0 && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count != 0)
+        else if (atLeastOneDocs.Count > 0)
         {
-            result = invertedIndex.Values.SelectMany(list => list).Distinct().Except(mustNotHaveDocs).ToList();
+            positiveDocs = atLeastOneDocs;
         }
-        else if (mustHaveDocs.Count != 0 && atLeastOneDocs.Count != 0)
+        else
         {
-            result = mustHaveDocs.Intersect(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
+            positiveDocs = allDocs.ToList();
         }
-        else if (mustHaveDocs.Count == 0 || atLeastOneDocs.Count == 0)
-        {
-            result = mustHaveDocs.Union(atLeastOneDocs).Except(mustNotHaveDocs).ToList();
-        }
-        return result;
+        return positiveDocs.Except(mustNotHaveDocs).ToList();
     }
 }
