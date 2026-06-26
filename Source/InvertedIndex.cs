@@ -7,23 +7,23 @@ namespace InvertedIndexProgram;
 public class InvertedIndex
 {
     private readonly ITextProcessor _textProcessor;
-    public Dictionary<string, HashSet<string>> IndexDic { get; private set; } = new();
+    public Dictionary<string, HashSet<string>> InvertedIndexDic { get; private set; } = new();
     public InvertedIndex(string[] docPaths, ITextProcessor textProcessor)
     {
         _textProcessor = textProcessor;
 
         foreach (string docFileDir in docPaths)
         {
-            string fileName = Path.GetFileNameWithoutExtension(docFileDir);
-            string content = File.ReadAllText(docFileDir).ToLower().Trim();
+            var fileName = Path.GetFileNameWithoutExtension(docFileDir);
+            var content = File.ReadAllText(docFileDir).ToLower().Trim();
             List<string> terms = _textProcessor.FilterTerms(content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList());
 
             foreach (string term in terms)
             {
-                if (!IndexDic.TryGetValue(term, out var documents))
+                if (!InvertedIndexDic.TryGetValue(term, out var documents))
                 {
                     documents = new HashSet<string>();
-                    IndexDic[term] = documents;
+                    InvertedIndexDic[term] = documents;
                 }
                 documents.Add(fileName);
             }
@@ -41,21 +41,17 @@ public class InvertedIndex
     /// </list>
     /// </param>
     /// <returns>The Resulted document names seperated by commas.</returns>
-    public string Search(List<List<string>> queryBundle)
-    {
-        return GetSearchResult(queryBundle, IndexDic);
-    }
-    private static string GetSearchResult(List<List<string>> queryBundle, Dictionary<string, HashSet<string>> invertedIndex)
+    public string GetSearchResult(List<List<string>> queryBundle)
     {
         var mustHaveTerms = queryBundle[0];
         var atLeastOneTerms = queryBundle[1];
         var mustNotHaveTerms = queryBundle[2];
 
-        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, invertedIndex);
-        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, invertedIndex);
-        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, invertedIndex);
+        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, InvertedIndexDic);
+        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, InvertedIndexDic);
+        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, InvertedIndexDic);
 
-        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, invertedIndex);
+        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, InvertedIndexDic);
         if (result.Count == 0)
         {
             return "No results!";

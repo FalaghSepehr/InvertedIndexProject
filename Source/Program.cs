@@ -19,7 +19,7 @@ class Program
         Directory.CreateDirectory(Path.GetDirectoryName(config.OutputPath));
         using (var writer = new StreamWriter(config.OutputPath))
         {
-            foreach (var pair in invertedIndex.IndexDic)
+            foreach (var pair in invertedIndex.InvertedIndexDic)
             {
                 writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}");
             }
