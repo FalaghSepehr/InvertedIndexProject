@@ -38,10 +38,16 @@ public class QueryParser
             switch (item[0])
             {
                 case '+':
-                    if (item.Length > 1) atLeastOneTerms.Add(item.Substring(1));
+                    if (item.Length > 1)
+                    {
+                        atLeastOneTerms.Add(item.Substring(1));
+                    }
                     break;
                 case '-':
-                    if (item.Length > 1) mustNotHaveTerms.Add(item.Substring(1));
+                    if (item.Length > 1)
+                    {
+                        mustNotHaveTerms.Add(item.Substring(1));
+                    }
                     break;
                 default:
                     mustHaveTerms.Add(item);

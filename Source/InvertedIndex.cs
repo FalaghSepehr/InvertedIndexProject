@@ -90,7 +90,9 @@ public class InvertedIndex
         foreach (var term in terms)
         {
             if (invertedIndex.TryGetValue(term, out var documents))
+            {
                 result.AddRange(documents);
+            }
         }
         return result.Distinct().ToList();
     }

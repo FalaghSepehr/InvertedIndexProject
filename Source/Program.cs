@@ -40,7 +40,9 @@ class Program
         while (current != null)
         {
             if (Directory.Exists(Path.Combine(current.FullName, "Documents")))
+            {
                 return current.FullName;
+            }
             current = current.Parent;
         }
         throw new InvalidOperationException("Could not locate project root directory containing 'Documents' folder.");
