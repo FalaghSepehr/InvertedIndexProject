@@ -25,7 +25,7 @@ public class SimpleTextProcessor : ITextProcessor
     /// </summary>
     /// <param name="terms">Terms to apply filterring to.</param>
     /// <returns>Filtered list of terms</returns>
-    private IEnumerable<string> FilterTerms(IEnumerable<string> terms)
+    public IEnumerable<string> FilterTerms(IEnumerable<string> terms)
     {
         return terms
             .SelectMany(t => _symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
