@@ -12,7 +12,11 @@ public class SimpleTextProcessor : ITextProcessor
         _symbolsAndNumbers = symbolsAndNumbers;
         _stopWords = stopWords;
     }
-    public IEnumerable<string> Tokenize(string text)
+    public List<string> ExtractTerms(string text)
+    {
+        return FilterTerms(Tokenize(text)).ToList();
+    }
+    private IEnumerable<string> Tokenize(string text)
     {
         return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
     }
@@ -21,7 +25,7 @@ public class SimpleTextProcessor : ITextProcessor
     /// </summary>
     /// <param name="terms">Terms to apply filterring to.</param>
     /// <returns>Filtered list of terms</returns>
-    public IEnumerable<string> FilterTerms(IEnumerable<string> terms)
+    private IEnumerable<string> FilterTerms(IEnumerable<string> terms)
     {
         return terms
             .SelectMany(t => _symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
@@ -37,5 +41,5 @@ public class SimpleTextProcessor : ITextProcessor
     /// </summary>
     /// <param name="word">The word to stem.</param>
     /// <returns>The stemmed word (e.g., "running" → "run").</returns>
-    public string Stem(string word) => Stemmer.GetStem(word);
+    private string Stem(string word) => Stemmer.GetStem(word);
 }
