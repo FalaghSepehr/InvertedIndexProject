@@ -6,28 +6,35 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class InvertedIndex
 {
-    private readonly ITextProcessor _textProcessor;
-    public Dictionary<string, HashSet<string>> InvertedIndexDic { get; private set; } = new();
-    public InvertedIndex(string[] docPaths, ITextProcessor textProcessor)
+    private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
+    public Dictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
+
+    private InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
     {
-        _textProcessor = textProcessor;
+        _invertedIndexDic = invertedIndexDic;
+    }
+    
+    public static InvertedIndex Build(string[] docPaths, ITextProcessor textProcessor)
+    {
+        var invertedIndexDic = new Dictionary<string, HashSet<string>>();
 
         foreach (string docFileDir in docPaths)
         {
             var fileName = Path.GetFileNameWithoutExtension(docFileDir);
             var content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = _textProcessor.FilterTerms(content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList());
+            List<string> terms = textProcessor.FilterTerms(content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList());
 
             foreach (string term in terms)
             {
-                if (!InvertedIndexDic.TryGetValue(term, out var documents))
+                if (!invertedIndexDic.TryGetValue(term, out var documents))
                 {
                     documents = new HashSet<string>();
-                    InvertedIndexDic[term] = documents;
+                    invertedIndexDic[term] = documents;
                 }
                 documents.Add(fileName);
             }
         }
+        return new InvertedIndex(invertedIndexDic);
     }
     /// <summary>
     /// Searches through the index depending on a query bundle.
@@ -47,11 +54,11 @@ public class InvertedIndex
         var atLeastOneTerms = queryBundle[1];
         var mustNotHaveTerms = queryBundle[2];
 
-        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, InvertedIndexDic);
-        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, InvertedIndexDic);
-        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, InvertedIndexDic);
+        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, _invertedIndexDic);
+        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, _invertedIndexDic);
+        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, _invertedIndexDic);
 
-        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, InvertedIndexDic);
+        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, _invertedIndexDic);
         if (result.Count == 0)
         {
             return "No results!";

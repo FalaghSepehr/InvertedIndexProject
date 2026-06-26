@@ -14,15 +14,14 @@ class Program
         var config = LoadConfig();
 
         ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
-        var invertedIndex = new InvertedIndex(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
+        var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
+        var queryParser = new QueryParser(simpleTextProcessor);
+        var consoleUI = new ConsoleUI(invertedIndex, queryParser);
 
         WriteIndexToFile(config.OutputPath, invertedIndex);
 
-        var queryParser = new QueryParser(simpleTextProcessor);
-        var consoleUI = new ConsoleUI(invertedIndex, queryParser);
         consoleUI.Run();
     }
-
     private static void WriteIndexToFile(string outputPath, InvertedIndex invertedIndex)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
@@ -35,7 +34,6 @@ class Program
         }
         Console.WriteLine($"Index written to {outputPath}");
     }
-
     private static string GetProjectDirectory()
     {
         var current = new DirectoryInfo(Environment.CurrentDirectory);
