@@ -51,7 +51,7 @@ public class QueryParser
         var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
         for (int i = 0; i < queryBundle.Count; i++)
         {
-            queryBundle[i] = _textProcessor.FilterTerms(queryBundle[i]);
+            queryBundle[i] = _textProcessor.FilterTerms(queryBundle[i]).ToList();
         }
         return queryBundle;
     }

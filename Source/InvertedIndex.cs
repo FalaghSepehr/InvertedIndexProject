@@ -13,7 +13,7 @@ public class InvertedIndex
     {
         _invertedIndexDic = invertedIndexDic;
     }
-    
+
     public static InvertedIndex Build(string[] docPaths, ITextProcessor textProcessor)
     {
         var invertedIndexDic = new Dictionary<string, HashSet<string>>();
@@ -22,7 +22,7 @@ public class InvertedIndex
         {
             var fileName = Path.GetFileNameWithoutExtension(docFileDir);
             var content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = textProcessor.FilterTerms(content.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList());
+            List<string> terms = textProcessor.FilterTerms(textProcessor.Tokenize(content)).ToList();
 
             foreach (string term in terms)
             {

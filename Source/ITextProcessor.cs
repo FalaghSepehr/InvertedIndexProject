@@ -2,6 +2,7 @@ namespace InvertedIndexProgram;
 
 public interface ITextProcessor
 {
-    List<string> FilterTerms(List<string> terms);
+    IEnumerable<string> Tokenize(string text);
+    IEnumerable<string> FilterTerms(IEnumerable<string> terms);
     string Stem(string word);
 }

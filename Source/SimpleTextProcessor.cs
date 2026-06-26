@@ -12,20 +12,23 @@ public class SimpleTextProcessor : ITextProcessor
         _symbolsAndNumbers = symbolsAndNumbers;
         _stopWords = stopWords;
     }
-
+    public IEnumerable<string> Tokenize(string text)
+    {
+        return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
+    }
     /// <summary>
     /// Does symbol, number and stop-word removal and stems words. Filters words with less than 2 characters.
     /// </summary>
     /// <param name="terms">Terms to apply filterring to.</param>
     /// <returns>Filtered list of terms</returns>
-    public List<string> FilterTerms(List<string> terms)
+    public IEnumerable<string> FilterTerms(IEnumerable<string> terms)
     {
         return terms
             .SelectMany(t => _symbolsAndNumbers.Aggregate(t, (currentTerm, c) => currentTerm.Replace(c, ' '))
             .Split(' ', StringSplitOptions.RemoveEmptyEntries))
             .Where(t => !_stopWords.Contains(t))
             .Where(t => t.Length > 2)
-            .Select(Stem).ToList();
+            .Select(Stem);
     }
     private static readonly EnglishStemmer Stemmer = new();
     /// <summary>
