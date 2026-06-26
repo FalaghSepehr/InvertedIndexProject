@@ -22,7 +22,7 @@ public class InvertedIndex
         {
             var fileName = Path.GetFileNameWithoutExtension(docFileDir);
             var content = File.ReadAllText(docFileDir).ToLower().Trim();
-            List<string> terms = textProcessor.ExtractTerms(content);
+            var terms = textProcessor.ExtractTerms(content);
 
             foreach (string term in terms)
             {
