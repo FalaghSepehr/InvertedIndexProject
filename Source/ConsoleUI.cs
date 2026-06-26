@@ -6,12 +6,14 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class ConsoleUI
 {
+    private readonly IInputReader _inputReader;
     private readonly QueryParser _queryParser;
     private readonly InvertedIndex _invertedIndex;
-    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser)
+    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser, IInputReader inputReader)
     {
         _queryParser = queryParser;
         _invertedIndex = invertedIndex;
+        _inputReader = inputReader;
     }
     /// <summary>
     /// Runs The Console UI. Requires an inverted index to function.
@@ -39,7 +41,7 @@ public class ConsoleUI
     }
     private void HandleInput(out bool shouldExit)
     {
-        if (int.TryParse(Console.ReadLine(), out int menuSelect))
+        if (int.TryParse(_inputReader.ReadLine(), out int menuSelect))
         {
             switch (menuSelect)
             {

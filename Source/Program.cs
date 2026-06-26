@@ -15,8 +15,9 @@ class Program
 
         ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
         var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
-        var queryParser = new QueryParser(simpleTextProcessor);
-        var consoleUI = new ConsoleUI(invertedIndex, queryParser);
+        IInputReader consoleInputReader = new ConsoleInputReader();
+        var queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
+        var consoleUI = new ConsoleUI(invertedIndex, queryParser, consoleInputReader);
 
         WriteIndexToFile(config.OutputPath, invertedIndex);
 

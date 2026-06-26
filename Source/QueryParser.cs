@@ -6,9 +6,12 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class QueryParser
 {
+    private readonly IInputReader _inputReader;
     private readonly ITextProcessor _textProcessor;
-    public QueryParser(ITextProcessor textProcessor)
+    
+    public QueryParser(ITextProcessor textProcessor, IInputReader inputReader)
     {
+        _inputReader = inputReader;
         _textProcessor = textProcessor;
     }
     /// <summary>
@@ -27,7 +30,7 @@ public class QueryParser
     /// </returns>
     public QueryBundle ParseQuery()
     {
-        string query = (Console.ReadLine() ?? string.Empty).Trim().ToLower();
+        string query = _inputReader.ReadLine().Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var mustHaveTerms = new List<string>();
         var atLeastOneTerms = new List<string>();
