@@ -80,10 +80,10 @@ class Program
         
         return new AppConfig
         {
-            DocumentsDir = appSettings["DocumentsPath"],
-            OutputPath = appSettings["OutputPath"],
-            SymbolsAndNumbers = LoadSymbolsAndNumbers(appSettings["SymbolsAndNumbersPath"]),
-            StopWords = LoadStopWords(appSettings["StopWordsPath"])
+            DocumentsDir = Path.Combine(ProjectDir, appSettings["DocumentsPath"]),
+            OutputPath = Path.Combine(ProjectDir, appSettings["OutputPath"]),
+            SymbolsAndNumbers = LoadSymbolsAndNumbers(Path.Combine(ProjectDir, appSettings["SymbolsAndNumbersPath"])),
+            StopWords = LoadStopWords(Path.Combine(ProjectDir, appSettings["StopWordsPath"]))
         };
     }
 }
