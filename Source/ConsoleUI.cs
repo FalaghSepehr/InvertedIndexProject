@@ -45,7 +45,7 @@ public class ConsoleUI
             {
                 case 1:
                     Console.Write("Search: ");
-                    Console.WriteLine(invertedIndex.GetSearchResult(_queryParser.ParseQuery()));
+                    Console.WriteLine(GetResultMessage(invertedIndex));
                     shouldExit = false;
                     break;
                 case 2:
@@ -63,5 +63,10 @@ public class ConsoleUI
             System.Console.WriteLine("Invalid Input!");
             shouldExit = false;
         }
+    }
+    private string GetResultMessage(InvertedIndex invertedIndex)
+    {
+        var results = invertedIndex.GetSearchResult(_queryParser.ParseQuery());
+        return results.Count == 0 ? "No results!" : string.Join(", ", results);
     }
 }

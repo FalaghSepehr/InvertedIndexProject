@@ -48,18 +48,15 @@ public class InvertedIndex
     /// </list>
     /// </param>
     /// <returns>The Resulted document names seperated by commas.</returns>
-    public string GetSearchResult(QueryBundle queryBundle)
+    public List<string> GetSearchResult(QueryBundle queryBundle)
     {
         var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave, _invertedIndexDic);
         var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne, _invertedIndexDic);
         var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave, _invertedIndexDic);
 
         var result = BuildResult(queryBundle.MustNotHave, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, _invertedIndexDic);
-        if (result.Count == 0)
-        {
-            return "No results!";
-        }
-        return string.Join(", ", result.OrderBy(v => v));
+ 
+        return result.OrderBy(v => v).ToList();
     }
     private static List<string> IntersectTermDocs(List<string> terms, Dictionary<string, HashSet<string>> invertedIndex)
     {
