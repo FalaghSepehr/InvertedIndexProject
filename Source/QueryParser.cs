@@ -25,7 +25,7 @@ public class QueryParser
     /// <item><description>[2] Must-not-have terms — documents containing any of these are excluded.</description></item>
     /// </list>
     /// </returns>
-    public List<List<string>> ParseQuery()
+    public QueryBundle ParseQuery()
     {
         string query = (Console.ReadLine() ?? string.Empty).Trim().ToLower();
         var queryArray = query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -48,11 +48,18 @@ public class QueryParser
                     break;
             }
         }
-        var queryBundle = new List<List<string>>() { mustHaveTerms, atLeastOneTerms, mustNotHaveTerms };
-        for (int i = 0; i < queryBundle.Count; i++)
+ 
+        return new QueryBundle
         {
-            queryBundle[i] = _textProcessor.FilterTerms(queryBundle[i]).ToList();
-        }
-        return queryBundle;
+            MustHave = _textProcessor.FilterTerms(mustHaveTerms).ToList(),
+            AtLeastOne = _textProcessor.FilterTerms(atLeastOneTerms).ToList(),
+            MustNotHave = _textProcessor.FilterTerms(mustNotHaveTerms).ToList()
+        };
     }
+}
+public record QueryBundle
+{
+    public List<string> MustHave { get; init; }
+    public List<string> AtLeastOne { get; init; }
+    public List<string> MustNotHave { get; init; }
 }

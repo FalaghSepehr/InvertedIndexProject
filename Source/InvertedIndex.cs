@@ -48,17 +48,13 @@ public class InvertedIndex
     /// </list>
     /// </param>
     /// <returns>The Resulted document names seperated by commas.</returns>
-    public string GetSearchResult(List<List<string>> queryBundle)
+    public string GetSearchResult(QueryBundle queryBundle)
     {
-        var mustHaveTerms = queryBundle[0];
-        var atLeastOneTerms = queryBundle[1];
-        var mustNotHaveTerms = queryBundle[2];
+        var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave, _invertedIndexDic);
+        var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne, _invertedIndexDic);
+        var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave, _invertedIndexDic);
 
-        var mustHaveDocs = IntersectTermDocs(mustHaveTerms, _invertedIndexDic);
-        var atLeastOneDocs = UnionTermDocs(atLeastOneTerms, _invertedIndexDic);
-        var mustNotHaveDocs = UnionTermDocs(mustNotHaveTerms, _invertedIndexDic);
-
-        var result = BuildResult(mustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, _invertedIndexDic);
+        var result = BuildResult(queryBundle.MustNotHave, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, _invertedIndexDic);
         if (result.Count == 0)
         {
             return "No results!";
