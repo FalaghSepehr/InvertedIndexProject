@@ -7,13 +7,15 @@ namespace InvertedIndexProgram;
 public class ConsoleUI
 {
     private readonly IInputReader _inputReader;
+    private readonly IOutputWriter _outputWriter;
     private readonly QueryParser _queryParser;
     private readonly InvertedIndex _invertedIndex;
-    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser, IInputReader inputReader)
+    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser, IInputReader inputReader, IOutputWriter outputWriter)
     {
         _queryParser = queryParser;
         _invertedIndex = invertedIndex;
         _inputReader = inputReader;
+        _outputWriter = outputWriter;
     }
     /// <summary>
     /// Runs The Console UI. Requires an inverted index to function.
@@ -33,11 +35,7 @@ public class ConsoleUI
     }
     private void ShowMenu()
     {
-        System.Console.WriteLine("=================");
-        System.Console.WriteLine("Select: ");
-        System.Console.WriteLine("1. Search");
-        System.Console.WriteLine("2. Exit");
-        System.Console.WriteLine("=================");
+        _outputWriter.WriteLine("\n=================\nMenu\n1. Search\n2. Exit\n=================");
     }
     private void HandleInput(out bool shouldExit)
     {
@@ -46,23 +44,23 @@ public class ConsoleUI
             switch (menuSelect)
             {
                 case 1:
-                    Console.Write("Search: ");
-                    Console.WriteLine(GetResultMessage());
+                    _outputWriter.WriteLine("Search: ");
+                    _outputWriter.WriteLine(GetResultMessage());
                     shouldExit = false;
                     break;
                 case 2:
-                    Console.WriteLine("GoodBye!");
+                    _outputWriter.WriteLine("GoodBye!");
                     shouldExit = true;
                     break;
                 default:
-                    Console.WriteLine("Invalid Number!");
+                    _outputWriter.WriteLine("Invalid Number!");
                     shouldExit = false;
                     break;
             }
         }
         else
         {
-            Console.WriteLine("Invalid Input!");
+            _outputWriter.WriteLine("Invalid Input!");
             shouldExit = false;
         }
     }

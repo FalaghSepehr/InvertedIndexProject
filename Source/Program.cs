@@ -2,6 +2,7 @@
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
+global using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace InvertedIndexProgram;
@@ -13,27 +14,21 @@ class Program
     {
         var config = LoadConfig();
 
-        ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
-        var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
+        IOutputWriter consoleOutputWriter = new ConsoleOutputWriter();
+        IOutputWriter fileOutputWriter = new FileOutputWriter(config.OutputPath);
         IInputReader consoleInputReader = new ConsoleInputReader();
-        var queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
-        var consoleUI = new ConsoleUI(invertedIndex, queryParser, consoleInputReader);
 
-        WriteIndexToFile(config.OutputPath, invertedIndex);
+        ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
+
+        var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
+        var queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
+        var consoleUI = new ConsoleUI(invertedIndex, queryParser, consoleInputReader, consoleOutputWriter);
+
+        
+        invertedIndex.ExportTo(fileOutputWriter);
+        consoleOutputWriter.WriteLine($"Index written to {config.OutputPath}");
 
         consoleUI.Run();
-    }
-    private static void WriteIndexToFile(string outputPath, InvertedIndex invertedIndex)
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
-        using (var writer = new StreamWriter(outputPath))
-        {
-            foreach (var pair in invertedIndex.InvertedIndexDic)
-            {
-                writer.WriteLine($"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}");
-            }
-        }
-        Console.WriteLine($"Index written to {outputPath}");
     }
     private static string GetProjectDirectory()
     {

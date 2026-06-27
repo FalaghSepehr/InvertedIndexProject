@@ -58,6 +58,19 @@ public class InvertedIndex
  
         return result.OrderBy(v => v).ToList();
     }
+    public void ExportTo(IOutputWriter writer)
+    {
+        foreach (var pair in InvertedIndexDic)
+        {
+            writer.WriteLine(FormatEntry(pair));
+        }
+    }
+
+    private string FormatEntry(KeyValuePair<string, HashSet<string>> pair)
+    {
+        return $"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}";
+    }
+
     private List<string> IntersectTermDocs(List<string> terms)
     {
         var result = new List<string>();
