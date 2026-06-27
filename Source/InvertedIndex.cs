@@ -1,9 +1,5 @@
 namespace InvertedIndexProgram;
-/// <summary>
-/// Builds an inverted index based off of a list of paths to documents.
-/// Supports stemming, stop-word removal ,symbol and number removal.
-/// Supports prefix-based search operators (+, -).
-/// </summary>
+
 public class InvertedIndex
 {
     private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
@@ -13,7 +9,6 @@ public class InvertedIndex
     {
         _invertedIndexDic = invertedIndexDic;
     }
-
     public static InvertedIndex Build(string[] docPaths, ITextProcessor textProcessor)
     {
         var invertedIndexDic = new Dictionary<string, HashSet<string>>();
@@ -36,18 +31,6 @@ public class InvertedIndex
         }
         return new InvertedIndex(invertedIndexDic);
     }
-    /// <summary>
-    /// Searches through the index depending on a query bundle.
-    /// </summary>
-    /// <param name="queryBundle">
-    /// A list containing three categorized term lists:
-    /// <list type="bullet">
-    /// <item><description>[0] Must-have terms — the word must be present in the document.</description></item>
-    /// <item><description>[1] At-least-one terms — at least one of these words must be present.</description></item>
-    /// <item><description>[2] Must-not-have terms — documents containing any of these are excluded.</description></item>
-    /// </list>
-    /// </param>
-    /// <returns>The Resulted document names seperated by commas.</returns>
     public List<string> GetSearchResult(QueryBundle queryBundle)
     {
         var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);

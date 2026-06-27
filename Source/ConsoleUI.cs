@@ -1,9 +1,7 @@
 using Microsoft.VisualBasic;
 
 namespace InvertedIndexProgram;
-/// <summary>
-/// Prints the menu and handles menu input.
-/// </summary>
+
 public class ConsoleUI
 {
     private readonly IInputReader _inputReader;
@@ -17,10 +15,6 @@ public class ConsoleUI
         _inputReader = inputReader;
         _outputWriter = outputWriter;
     }
-    /// <summary>
-    /// Runs The Console UI. Requires an inverted index to function.
-    /// </summary>
-    /// <param name="invertedIndex">Index to Search in.</param>
     public void Run()
     {
         do
