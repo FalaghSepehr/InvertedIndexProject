@@ -3,7 +3,7 @@ namespace InvertedIndexProgram;
 public class FileOutputWriter : IOutputWriter
 {
     private readonly string _path;
-    private bool _initialized;
+    private bool _initialized = false;
 
     public FileOutputWriter(string path)
     {
@@ -15,6 +15,7 @@ public class FileOutputWriter : IOutputWriter
         if (!_initialized)
         {
             File.WriteAllText(_path, string.Empty);
+            _initialized = true;
         }
         File.AppendAllText(_path, message + Environment.NewLine);
     }
