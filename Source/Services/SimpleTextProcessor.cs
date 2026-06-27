@@ -14,24 +14,29 @@ public class SimpleTextProcessor : ITextProcessor
     }
     public List<string> ExtractTerms(string text)
     {
-        return NormalizeTerms(Tokenize(text)).ToList();
+        return NormalizeTerms(PrepareTokens(text));
     }
-    private IEnumerable<string> Tokenize(string text)
+    public List<string> PrepareTokens(string rawText)
     {
-        return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries);
+        return Tokenize(rawText.Trim().ToLower());
+    }
+    public List<string> Tokenize(string text)
+    {
+        return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList();
     }
     /// <summary>
     /// Does symbol, number and stop-word removal and stems words. Filters words with less than 2 characters.
     /// </summary>
     /// <param name="terms">Terms to apply filterring to.</param>
     /// <returns>Filtered list of terms</returns>
-    public IEnumerable<string> NormalizeTerms(IEnumerable<string> terms)
+    public List<string> NormalizeTerms(List<string> terms)
     {
         return terms
             .Select(CleanSymbolsAndNumbers)
             .SelectMany(t => t.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             .Where(IsIndexable)
-            .Select(Stem);
+            .Select(Stem)
+            .ToList();
     }
     private string CleanSymbolsAndNumbers(string term)
     {

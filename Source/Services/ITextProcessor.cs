@@ -3,5 +3,7 @@ namespace InvertedIndexProgram;
 public interface ITextProcessor
 {
     List<string> ExtractTerms(string text);
-    IEnumerable<string> NormalizeTerms(IEnumerable<string> terms);
+    List<string> NormalizeTerms(List<string> terms);
+    List<string> Tokenize(string text);
+    List<string> PrepareTokens(string text);
 }

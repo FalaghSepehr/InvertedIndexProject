@@ -16,7 +16,7 @@ public class InvertedIndex
         foreach (string docFileDir in docPaths)
         {
             var fileName = Path.GetFileNameWithoutExtension(docFileDir);
-            var content = File.ReadAllText(docFileDir).ToLower().Trim();
+            var content = File.ReadAllText(docFileDir);
             var terms = textProcessor.ExtractTerms(content);
 
             foreach (string term in terms)

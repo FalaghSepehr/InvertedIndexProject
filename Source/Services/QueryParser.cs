@@ -12,12 +12,12 @@ public class QueryParser
     }
     public QueryBundle ParseQuery()
     {
-        var queryArray = GetQueryArray();
+        var queryList = _textProcessor.PrepareTokens(_inputReader.ReadLine());
         var mustHaveTerms = new List<string>();
         var atLeastOneTerms = new List<string>();
         var mustNotHaveTerms = new List<string>();
 
-        foreach (string item in queryArray)
+        foreach (string item in queryList)
         {
             switch (item[0])
             {
@@ -41,14 +41,9 @@ public class QueryParser
  
         return new QueryBundle
         {
-            MustHave = _textProcessor.NormalizeTerms(mustHaveTerms).ToList(),
-            AtLeastOne = _textProcessor.NormalizeTerms(atLeastOneTerms).ToList(),
-            MustNotHave = _textProcessor.NormalizeTerms(mustNotHaveTerms).ToList()
+            MustHave = _textProcessor.NormalizeTerms(mustHaveTerms),
+            AtLeastOne = _textProcessor.NormalizeTerms(atLeastOneTerms),
+            MustNotHave = _textProcessor.NormalizeTerms(mustNotHaveTerms)
         };
-    }
-    private string[] GetQueryArray()
-    {
-        string query = _inputReader.ReadLine().Trim().ToLower();
-        return query.Split(' ', StringSplitOptions.RemoveEmptyEntries);
     }
 }
