@@ -3,7 +3,7 @@ namespace InvertedIndexProgram;
 public class InvertedIndex
 {
     private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
-    public Dictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
+    public IReadOnlyDictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
 
     private InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
     {
