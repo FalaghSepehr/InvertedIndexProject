@@ -10,7 +10,7 @@ namespace InvertedIndexProgram;
 class Program
 {
     private static readonly string ProjectDir = GetProjectDirectory();
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
         var config = LoadConfig();
 
@@ -84,11 +84,4 @@ class Program
             StopWords = LoadStopWords(Path.Combine(ProjectDir, appSettings["StopWordsPath"]))
         };
     }
-}
-record AppConfig
-{
-    public string DocumentsDir { get; init; }
-    public string OutputPath { get; init; }
-    public char[] SymbolsAndNumbers { get; init; }
-    public HashSet<string> StopWords { get; init; }
 }
