@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace InvertedIndexProgram;
 
 public class ConsoleUI
