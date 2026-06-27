@@ -30,19 +30,6 @@ class Program
 
         consoleUI.Run();
     }
-    private static string GetProjectDirectory()
-    {
-        var current = new DirectoryInfo(Environment.CurrentDirectory);
-        while (current != null)
-        {
-            if (Directory.Exists(Path.Combine(current.FullName, "Documents")))
-            {
-                return current.FullName;
-            }
-            current = current.Parent;
-        }
-        throw new InvalidOperationException("Could not locate project root directory containing 'Documents' folder.");
-    }
     private static string[] GetDocumentPathsArray(string docsDir)
     {
         if (!Directory.Exists(docsDir))
