@@ -73,29 +73,28 @@ public class InvertedIndex
 
     private List<string> IntersectTermDocs(List<string> terms)
     {
-        var result = new List<string>();
-
-        bool first = true;
-        foreach (var term in terms)
+        if (terms.Count == 0)
         {
-            if (_invertedIndexDic.TryGetValue(term, out var documents))
-            {
-                if (first)
-                {
-                    result = new List<string>(documents);
-                    first = false;
-                }
-                else
-                {
-                    result = result.Intersect(documents).ToList();
-                }
-            }
-            else
+            return new List<string>();
+        }
+
+        if (!_invertedIndexDic.TryGetValue(terms[0], out var firstDocs))
+        {
+            return new List<string>();
+        }
+
+        var resultSet = new HashSet<string>(firstDocs);
+
+        for (int i = 1; i < terms.Count; i++)
+        {
+            if (!_invertedIndexDic.TryGetValue(terms[i], out var docs))
             {
                 return new List<string>();
             }
+            resultSet.IntersectWith(docs);
         }
-        return result;
+
+        return resultSet.ToList();
     }
     private List<string> UnionTermDocs(List<string> terms)
     {
