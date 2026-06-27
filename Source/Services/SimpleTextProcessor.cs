@@ -20,11 +20,6 @@ public class SimpleTextProcessor : ITextProcessor
     {
         return Tokenize(rawText.Trim().ToLower());
     }
-    /// <summary>
-    /// Does symbol, number and stop-word removal and stems words. Filters words with less than 2 characters.
-    /// </summary>
-    /// <param name="terms">Terms to apply filterring to.</param>
-    /// <returns>Filtered list of terms</returns>
     public List<string> NormalizeTerms(List<string> terms)
     {
         return terms
@@ -47,11 +42,5 @@ public class SimpleTextProcessor : ITextProcessor
         return !_stopWords.Contains(term) && term.Length > 2;
     }
     private static readonly EnglishStemmer Stemmer = new();
-    /// <summary>
-    /// Stems an English word to its root form using the Porter algorithm
-    /// (via the PorterStemmer NuGet package).
-    /// </summary>
-    /// <param name="word">The word to stem.</param>
-    /// <returns>The stemmed word (e.g., "running" → "run").</returns>
     private string Stem(string word) => Stemmer.GetStem(word);
 }
