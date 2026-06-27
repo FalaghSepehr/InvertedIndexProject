@@ -33,11 +33,12 @@ public class InvertedIndex
     }
     public List<string> GetSearchResult(QueryBundle queryBundle)
     {
+        var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
         var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);
         var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne);
         var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave);
 
-        var result = BuildResult(mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
+        var result = BuildResult(hasMustHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
  
         return result.OrderBy(v => v).ToList();
     }
@@ -91,14 +92,14 @@ public class InvertedIndex
         }
         return resultSet.ToList();
     }
-    private List<string> BuildResult(List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
+    private List<string> BuildResult(bool hasMustHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
     {
         var allDocs = _invertedIndexDic.Values.SelectMany(d => d).Distinct();
 
         List<string> positiveDocs;
-        if (mustHaveDocs.Count > 0)
+        if (hasMustHaveTerms)
         {
-            positiveDocs = mustHaveDocs.Intersect(atLeastOneDocs.Count > 0 ? atLeastOneDocs : allDocs).ToList();
+            positiveDocs = mustHaveDocs.Count == 0 ? [] : mustHaveDocs.Intersect(atLeastOneDocs.Count > 0 ? atLeastOneDocs : allDocs).ToList();
         }
         else if (atLeastOneDocs.Count > 0)
         {
