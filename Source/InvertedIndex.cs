@@ -98,15 +98,15 @@ public class InvertedIndex
     }
     private List<string> UnionTermDocs(List<string> terms)
     {
-        var result = new List<string>();
+        var resultSet = new HashSet<string>();
         foreach (var term in terms)
         {
             if (_invertedIndexDic.TryGetValue(term, out var documents))
             {
-                result.AddRange(documents);
+                resultSet.UnionWith(documents);
             }
         }
-        return result.Distinct().ToList();
+        return resultSet.ToList();
     }
     private List<string> BuildResult(List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
     {
