@@ -20,10 +20,6 @@ public class SimpleTextProcessor : ITextProcessor
     {
         return Tokenize(rawText.Trim().ToLower());
     }
-    public List<string> Tokenize(string text)
-    {
-        return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList();
-    }
     /// <summary>
     /// Does symbol, number and stop-word removal and stems words. Filters words with less than 2 characters.
     /// </summary>
@@ -37,6 +33,10 @@ public class SimpleTextProcessor : ITextProcessor
             .Where(IsIndexable)
             .Select(Stem)
             .ToList();
+    }
+    private List<string> Tokenize(string text)
+    {
+        return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList();
     }
     private string CleanSymbolsAndNumbers(string term)
     {
