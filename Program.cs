@@ -9,7 +9,7 @@ namespace InvertedIndexProgram;
 
 class Program
 {
-    private static readonly string ProjectDir = GetProjectDirectory();
+    private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
     public static void Main(string[] args)
     {
         var config = LoadConfig();
@@ -70,7 +70,7 @@ class Program
     private static AppConfig LoadConfig()
     {
         var configuration = new ConfigurationBuilder()
-            .SetBasePath(ProjectDir)
+            .SetBasePath(BaseDir)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
@@ -78,10 +78,10 @@ class Program
         
         return new AppConfig
         {
-            DocumentsDir = Path.Combine(ProjectDir, appSettings["DocumentsPath"]),
-            OutputPath = Path.Combine(ProjectDir, appSettings["OutputPath"]),
-            SymbolsAndNumbers = LoadSymbolsAndNumbers(Path.Combine(ProjectDir, appSettings["SymbolsAndNumbersPath"])),
-            StopWords = LoadStopWords(Path.Combine(ProjectDir, appSettings["StopWordsPath"]))
+            DocumentsDir = Path.Combine(BaseDir, appSettings["DocumentsPath"]),
+            OutputPath = Path.Combine(BaseDir, appSettings["OutputPath"]),
+            SymbolsAndNumbers = LoadSymbolsAndNumbers(Path.Combine(BaseDir, appSettings["SymbolsAndNumbersPath"])),
+            StopWords = LoadStopWords(Path.Combine(BaseDir, appSettings["StopWordsPath"]))
         };
     }
 }
