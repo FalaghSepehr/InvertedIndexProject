@@ -21,7 +21,7 @@ class Program
         ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
 
         var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
-        var queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
+        IQueryParser queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
         var consoleUI = new ConsoleUI(invertedIndex, queryParser, consoleInputReader, consoleOutputWriter);
 
         
@@ -30,6 +30,12 @@ class Program
 
         consoleUI.Run();
     }
+    /// <summary>
+    /// Gets seperate documnet paths stored in the given directory.
+    /// </summary>
+    /// <param name="docsDir">The folder in which the documents are stored</param>
+    /// <returns>Array of document paths</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static string[] GetDocumentPathsArray(string docsDir)
     {
         if (!Directory.Exists(docsDir))
@@ -54,6 +60,10 @@ class Program
         }
         return new HashSet<string>(File.ReadAllText(path).Split(' ', StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
     }
+    /// <summary>
+    /// Provides the user's config loaded from appsettings.json
+    /// </summary>
+    /// <returns></returns>
     private static AppConfig LoadConfig()
     {
         var configuration = new ConfigurationBuilder()

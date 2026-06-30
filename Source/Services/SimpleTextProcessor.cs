@@ -12,9 +12,9 @@ public class SimpleTextProcessor : ITextProcessor
         _symbolsAndNumbers = symbolsAndNumbers;
         _stopWords = stopWords;
     }
-    public List<string> ExtractTerms(string text)
+    public List<string> ExtractTerms(string rawText)
     {
-        return NormalizeTerms(PrepareTokens(text));
+        return NormalizeTerms(PrepareTokens(rawText));
     }
     public List<string> PrepareTokens(string rawText)
     {
