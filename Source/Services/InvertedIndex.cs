@@ -1,6 +1,6 @@
 namespace InvertedIndexProgram;
 
-public class InvertedIndex
+public class InvertedIndex : ISearchService
 {
     private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
     public IReadOnlyDictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
@@ -31,7 +31,7 @@ public class InvertedIndex
         }
         return new InvertedIndex(invertedIndexDic);
     }
-    public List<string> GetSearchResult(QueryBundle queryBundle)
+    public List<string> Search(QueryBundle queryBundle)
     {
         var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
         var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);

@@ -4,9 +4,9 @@ public class ConsoleUI
 {
     private readonly IInputReader _inputReader;
     private readonly IOutputWriter _outputWriter;
-    private readonly QueryParser _queryParser;
-    private readonly InvertedIndex _invertedIndex;
-    public ConsoleUI(InvertedIndex invertedIndex, QueryParser queryParser, IInputReader inputReader, IOutputWriter outputWriter)
+    private readonly IQueryParser _queryParser;
+    private readonly ISearchService _invertedIndex;
+    public ConsoleUI(ISearchService invertedIndex, IQueryParser queryParser, IInputReader inputReader, IOutputWriter outputWriter)
     {
         _queryParser = queryParser;
         _invertedIndex = invertedIndex;
@@ -58,7 +58,7 @@ public class ConsoleUI
     }
     private string GetResultMessage()
     {
-        var results = _invertedIndex.GetSearchResult(_queryParser.ParseQuery());
+        var results = _invertedIndex.Search(_queryParser.ParseQuery());
         return results.Count == 0 ? "No results!" : string.Join(", ", results);
     }
 }

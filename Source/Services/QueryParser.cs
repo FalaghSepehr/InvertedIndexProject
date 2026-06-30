@@ -1,6 +1,6 @@
 namespace InvertedIndexProgram;
 
-public class QueryParser
+public class QueryParser : IQueryParser
 {
     private readonly IInputReader _inputReader;
     private readonly ITextProcessor _textProcessor;
