@@ -1,5 +1,7 @@
 namespace InvertedIndexProgram;
-
+/// <summary>
+/// Writes output messages to a file.
+/// </summary>
 public class FileOutputWriter : IOutputWriter
 {
     private readonly string _path;

@@ -1,5 +1,9 @@
 namespace InvertedIndexProgram;
-
+/// <summary>
+/// Builds and queries an inverted index from text documents.
+/// Accepts an <see cref="ITextProcessor"/> for term extraction, enabling different text processing strategies.
+/// Supports prefix-based search operators (+, -) for must-have, at-least-one, and must-not-have terms.
+/// </summary>
 public class InvertedIndex : ISearchService
 {
     private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
@@ -9,6 +13,12 @@ public class InvertedIndex : ISearchService
     {
         _invertedIndexDic = invertedIndexDic;
     }
+    /// <summary>
+    /// Builds an inverted index from the specified text documents using the given text processor.
+    /// </summary>
+    /// <param name="docPaths">Array of file paths to text documents.</param>
+    /// <param name="textProcessor">The text processor for tokenizing and normalizing terms.</param>
+    /// <returns>A fully built InvertedIndex ready for searching.</returns>
     public static InvertedIndex Build(string[] docPaths, ITextProcessor textProcessor)
     {
         var invertedIndexDic = new Dictionary<string, HashSet<string>>();
@@ -42,6 +52,10 @@ public class InvertedIndex : ISearchService
  
         return result.OrderBy(v => v).ToList();
     }
+    /// <summary>
+    /// Exports the entire index to the specified output writer for debugging or external use.
+    /// </summary>
+    /// <param name="writer">The output writer to receive the formatted index.</param>
     public void ExportTo(IOutputWriter writer)
     {
         foreach (var pair in InvertedIndexDic)

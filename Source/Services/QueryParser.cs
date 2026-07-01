@@ -1,5 +1,9 @@
 namespace InvertedIndexProgram;
-
+/// <summary>
+/// Parses a raw query string into a <see cref="QueryBundle"/> by categorizing terms
+/// by prefix: + (at-least-one), - (must-not-have), and bare (must-have).
+/// Each category is normalized using the injected <see cref="ITextProcessor"/>.
+/// </summary>
 public class QueryParser : IQueryParser
 {
     private readonly IInputReader _inputReader;

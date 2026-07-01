@@ -1,7 +1,10 @@
 using PorterStemmer.Stemmers;
 
 namespace InvertedIndexProgram;
-
+/// <summary>
+/// Provides basic text processing by cleaning symbols and numbers, removing stop words,
+/// and applying Porter stemming. Implements <see cref="ITextProcessor"/>.
+/// </summary>
 public class SimpleTextProcessor : ITextProcessor
 {
     private readonly char[] _symbolsAndNumbers;

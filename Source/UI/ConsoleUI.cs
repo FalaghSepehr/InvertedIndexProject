@@ -1,5 +1,9 @@
 namespace InvertedIndexProgram;
-
+/// <summary>
+/// Console-based user interface that displays a menu and handles user input
+/// for searching the inverted index. Communicates results via an
+/// <see cref="IOutputWriter"/> and reads input via an <see cref="IInputReader"/>.
+/// </summary>
 public class ConsoleUI
 {
     private readonly IInputReader _inputReader;
@@ -13,6 +17,9 @@ public class ConsoleUI
         _inputReader = inputReader;
         _outputWriter = outputWriter;
     }
+    /// <summary>
+    /// Starts the menu loop and processes user input until exit is requested.
+    /// </summary>
     public void Run()
     {
         do

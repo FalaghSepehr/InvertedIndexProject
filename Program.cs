@@ -17,7 +17,6 @@ class Program
         IOutputWriter consoleOutputWriter = new ConsoleOutputWriter();
         IOutputWriter fileOutputWriter = new FileOutputWriter(config.OutputPath);
         IInputReader consoleInputReader = new ConsoleInputReader();
-
         ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
 
         var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
