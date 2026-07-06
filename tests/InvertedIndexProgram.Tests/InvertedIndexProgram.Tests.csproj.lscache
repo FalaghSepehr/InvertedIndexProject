@@ -273,6 +273,9 @@ UnitTest1.cs
 <DOTNET>/sdk/10.0.109/Sdks/Microsoft.NET.Sdk/analyzers/
  Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll
  Microsoft.CodeAnalysis.NetAnalyzers.dll
+<NUGET>/nsubstitute.analyzers.csharp/1.0.17/analyzers/dotnet/cs/
+ NSubstitute.Analyzers.CSharp.dll
+ NSubstitute.Analyzers.Shared.dll
 <NUGET>/xunit.analyzers/1.18.0/analyzers/dotnet/cs/
  xunit.analyzers.dll
  xunit.analyzers.fixes.dll
