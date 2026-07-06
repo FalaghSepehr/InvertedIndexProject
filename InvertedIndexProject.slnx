@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/InvertedIndexProgram/InvertedIndexProgram.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InvertedIndexProgram.Tests/InvertedIndexProgram.Tests.csproj" />
+  </Folder>
+</Solution>

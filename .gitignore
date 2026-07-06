@@ -1,5 +1,8 @@
-/obj
-/bin
-InvertedIndexProgram.csproj.lscache
-/Documents
-/Outputs
+# Build output
+src/InvertedIndexProgram/bin/
+src/InvertedIndexProgram/obj/
+src/InvertedIndexProgram/Documents
+src/InvertedIndexProgram/InvertedIndexProgram.csproj.lscache
+
+tests/InvertedIndexProgram.Tests/bin/
+tests/InvertedIndexProgram.Tests/obj/
