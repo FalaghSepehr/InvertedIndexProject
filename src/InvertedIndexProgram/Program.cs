@@ -2,7 +2,6 @@
 global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
-global using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace InvertedIndexProgram;
@@ -44,7 +43,7 @@ class Program
     }
     return Directory.GetFiles(docsDir);
   }
-  private static char[] LoadSymbolsAndNumbers(string path)
+  private static char[] LoadSymbols(string path)
   {
     if (!File.Exists(path))
     {
@@ -77,7 +76,7 @@ class Program
     {
       DocumentsDir = Path.Combine(BaseDir, appSettings["DocumentsPath"]),
       OutputPath = Path.Combine(BaseDir, appSettings["OutputPath"]),
-      SymbolsAndNumbers = LoadSymbolsAndNumbers(Path.Combine(BaseDir, appSettings["SymbolsAndNumbersPath"])),
+      SymbolsAndNumbers = LoadSymbols(Path.Combine(BaseDir, appSettings["SymbolsPath"])),
       StopWords = LoadStopWords(Path.Combine(BaseDir, appSettings["StopWordsPath"]))
     };
   }
