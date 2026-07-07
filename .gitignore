@@ -6,3 +6,4 @@ src/InvertedIndexProgram/InvertedIndexProgram.csproj.lscache
 
 tests/InvertedIndexProgram.Tests/bin/
 tests/InvertedIndexProgram.Tests/obj/
+tests/InvertedIndexProgram.Tests/InvertedIndexProgram.Tests.csproj.lscache
