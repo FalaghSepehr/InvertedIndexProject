@@ -58,6 +58,11 @@ public class Searcher : ISearchService
   }
   private List<string> BuildResult(bool hasMustHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
   {
+    if (!hasMustHaveTerms && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
+    {
+      return new List<string>();
+    }
+
     var allDocs = _invertedIndexDic.Values.SelectMany(d => d).Distinct();
 
     List<string> positiveDocs;
