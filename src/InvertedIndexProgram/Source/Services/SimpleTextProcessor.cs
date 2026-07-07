@@ -33,7 +33,7 @@ public class SimpleTextProcessor : ITextProcessor
   {
     return terms
         .Select(CleanSymbolsAndNumbers)
-        .SelectMany(t => t.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        .SelectMany(SplitOnSpaces)
         .Where(IsIndexable)
         .Select(Stem)
         .ToList();
@@ -45,6 +45,10 @@ public class SimpleTextProcessor : ITextProcessor
   private string CleanSymbolsAndNumbers(string term)
   {
     return _allCharsToRemove.Aggregate(term, (current, c) => current.Replace(c, ' '));
+  }
+  private List<string> SplitOnSpaces(string term)
+  {
+    return term.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
   }
   private bool IsIndexable(string term)
   {

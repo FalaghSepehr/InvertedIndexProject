@@ -51,11 +51,8 @@ public class InvertedIndex
       writer.WriteLine(FormatEntry(pair));
     }
   }
-
   private string FormatEntry(KeyValuePair<string, HashSet<string>> pair)
   {
     return $"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}";
   }
-
-
 }

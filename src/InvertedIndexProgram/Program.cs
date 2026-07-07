@@ -21,10 +21,9 @@ class Program
 
     var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
     ISearchService searhcer = new Searcher(invertedIndex.InvertedIndexDic);
-
     IQueryParser queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
-    var consoleUI = new ConsoleUI(searhcer, queryParser, consoleInputReader, consoleOutputWriter);
 
+    var consoleUI = new ConsoleUI(searhcer, queryParser, consoleInputReader, consoleOutputWriter);
 
     invertedIndex.ExportTo(fileOutputWriter);
     consoleOutputWriter.WriteLine($"Index written to {config.OutputPath}");
