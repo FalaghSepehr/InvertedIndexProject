@@ -4,5 +4,5 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class ConsoleOutputWriter : IOutputWriter
 {
-    public void WriteLine(string message) => Console.WriteLine(message);
+  public void WriteLine(string message) => Console.WriteLine(message);
 }

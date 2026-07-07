@@ -36,7 +36,7 @@ public class ConsoleUI
   {
     _outputWriter.WriteLine("\n=================\nMenu\n1. Search\n2. Exit\n=================");
   }
-  private void HandleInput(out bool shouldExit)
+  internal void HandleInput(out bool shouldExit)
   {
     if (int.TryParse(_inputReader.ReadLine(), out int menuSelect))
     {
@@ -63,7 +63,7 @@ public class ConsoleUI
       shouldExit = false;
     }
   }
-  private string GetResultMessage()
+  internal string GetResultMessage()
   {
     var results = _searcher.Search(_queryParser.ParseQuery());
     return results.Count == 0 ? "No results!" : string.Join(", ", results);

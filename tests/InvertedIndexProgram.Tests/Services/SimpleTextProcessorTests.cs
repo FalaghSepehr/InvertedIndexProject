@@ -1,10 +1,10 @@
 ﻿namespace InvertedIndexProgram.Tests;
 
-public class UnitTest1
+public class SimpleTextProcessorTests
 {
     [Fact]
     public void Test1()
     {
-
+      
     }
 }

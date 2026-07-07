@@ -38,22 +38,22 @@ public class SimpleTextProcessor : ITextProcessor
         .Select(Stem)
         .ToList();
   }
-  private List<string> Tokenize(string text)
+  internal List<string> Tokenize(string text)
   {
     return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList();
   }
-  private string CleanSymbolsAndNumbers(string term)
+  internal string CleanSymbolsAndNumbers(string term)
   {
     return _allCharsToRemove.Aggregate(term, (current, c) => current.Replace(c, ' '));
   }
-  private List<string> SplitOnSpaces(string term)
+  internal List<string> SplitOnSpaces(string term)
   {
     return term.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
   }
-  private bool IsIndexable(string term)
+  internal bool IsIndexable(string term)
   {
     return !_stopWords.Contains(term) && term.Length > 2;
   }
   private static readonly EnglishStemmer Stemmer = new();
-  private string Stem(string word) => Stemmer.GetStem(word);
+  internal string Stem(string word) => Stemmer.GetStem(word);
 }

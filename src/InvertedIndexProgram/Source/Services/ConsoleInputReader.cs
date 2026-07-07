@@ -5,5 +5,5 @@ namespace InvertedIndexProgram;
 /// </summary>
 public class ConsoleInputReader : IInputReader
 {
-    public string ReadLine() => Console.ReadLine() ?? string.Empty;
+  public string ReadLine() => Console.ReadLine() ?? string.Empty;
 }

@@ -35,7 +35,7 @@ class Program
   /// <param name="docsDir">The folder in which the documents are stored</param>
   /// <returns>Array of document paths</returns>
   /// <exception cref="InvalidOperationException"></exception>
-  private static string[] GetDocumentPathsArray(string docsDir)
+  internal static string[] GetDocumentPathsArray(string docsDir)
   {
     if (!Directory.Exists(docsDir))
     {
@@ -43,7 +43,7 @@ class Program
     }
     return Directory.GetFiles(docsDir);
   }
-  private static char[] LoadSymbols(string path)
+  internal static char[] LoadSymbols(string path)
   {
     if (!File.Exists(path))
     {
@@ -51,7 +51,7 @@ class Program
     }
     return File.ReadAllText(path).Where(c => !char.IsWhiteSpace(c)).ToArray();
   }
-  private static HashSet<string> LoadStopWords(string path)
+  internal static HashSet<string> LoadStopWords(string path)
   {
     if (!File.Exists(path))
     {
@@ -63,7 +63,7 @@ class Program
   /// Provides the user's config loaded from appsettings.json
   /// </summary>
   /// <returns></returns>
-  private static AppConfig LoadConfig()
+  internal static AppConfig LoadConfig()
   {
     var configuration = new ConfigurationBuilder()
         .SetBasePath(BaseDir)

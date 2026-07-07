@@ -19,7 +19,7 @@ public class Searcher : ISearchService
 
     return result.OrderBy(v => v).ToList();
   }
-  private List<string> IntersectTermDocs(List<string> terms)
+  internal List<string> IntersectTermDocs(List<string> terms)
   {
     if (terms.Count == 0)
     {
@@ -44,7 +44,7 @@ public class Searcher : ISearchService
 
     return resultSet.ToList();
   }
-  private List<string> UnionTermDocs(List<string> terms)
+  internal List<string> UnionTermDocs(List<string> terms)
   {
     var resultSet = new HashSet<string>();
     foreach (var term in terms)
@@ -56,7 +56,7 @@ public class Searcher : ISearchService
     }
     return resultSet.ToList();
   }
-  private List<string> BuildResult(bool hasMustHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
+  internal List<string> BuildResult(bool hasMustHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
   {
     if (!hasMustHaveTerms && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
     {

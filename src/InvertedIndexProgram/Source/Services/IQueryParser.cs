@@ -5,9 +5,9 @@ namespace InvertedIndexProgram;
 /// </summary>
 public interface IQueryParser
 {
-    /// <summary>
-    /// Reads and parses a query into categorized term lists.
-    /// </summary>
-    /// <returns>A bundle containing must-have, at-least-one, and must-not-have term lists.</returns>
-    QueryBundle ParseQuery();
+  /// <summary>
+  /// Reads and parses a query into categorized term lists.
+  /// </summary>
+  /// <returns>A bundle containing must-have, at-least-one, and must-not-have term lists.</returns>
+  QueryBundle ParseQuery();
 }

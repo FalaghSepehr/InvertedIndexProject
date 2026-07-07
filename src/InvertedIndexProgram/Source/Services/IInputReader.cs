@@ -4,9 +4,9 @@ namespace InvertedIndexProgram;
 /// </summary>
 public interface IInputReader
 {
-    /// <summary>
-    /// Takes one line as input.
-    /// </summary>
-    /// <returns></returns>
-    string ReadLine();
+  /// <summary>
+  /// Takes one line as input.
+  /// </summary>
+  /// <returns></returns>
+  string ReadLine();
 }

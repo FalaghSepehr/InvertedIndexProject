@@ -2,7 +2,7 @@ namespace InvertedIndexProgram;
 /// <summary>
 /// Holds configuration settings loaded from appsettings.json at startup.
 /// </summary>
-public record AppConfig
+internal record AppConfig
 {
     /// <summary>Path to the documents folder.</summary>
     public string DocumentsDir { get; init; }
