@@ -6,11 +6,11 @@ namespace InvertedIndexProgram;
 public record QueryBundle
 {
     /// <summary>Terms that must all be present in matching documents.</summary>
-    public List<string> MustHave { get; init; }
+    public List<string> MustHave { get; init; } = [];
 
     /// <summary>Terms where at least one must be present in matching documents.</summary>
-    public List<string> AtLeastOne { get; init; }
+    public List<string> AtLeastOne { get; init; } = [];
 
     /// <summary>Terms that must not be present in matching documents.</summary>
-    public List<string> MustNotHave { get; init; }
+    public List<string> MustNotHave { get; init; } = [];
 }
