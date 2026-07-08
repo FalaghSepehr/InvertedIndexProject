@@ -9,7 +9,54 @@ public class SearcherTests
     ["bird"] = ["doc1", "doc3"]
   };
   private static readonly Searcher _searcher = new(_invertedIndexDic);
-  
+
+  public class Search
+  {
+    [Fact]
+    public void ReturnsResults_when_all_categories_active()
+    {
+      var query = new QueryBundle
+      {
+        MustHave = ["cat"],
+        AtLeastOne = ["dog"],
+        MustNotHave = ["bird"]
+      };
+      var result = _searcher.Search(query);
+      Assert.Equal(["doc2"], result);
+    }
+
+    [Fact]
+    public void ReturnsResults_when_only_must_have()
+    {
+      var query = new QueryBundle { MustHave = ["cat", "dog"] };
+      var result = _searcher.Search(query);
+      Assert.Equal(["doc2"], result);
+    }
+
+    [Fact]
+    public void ReturnsResults_when_only_at_least_one()
+    {
+      var query = new QueryBundle { AtLeastOne = ["cat", "bird"] };
+      var result = _searcher.Search(query);
+      Assert.Equal(["doc1", "doc2", "doc3"], result);
+    }
+
+    [Fact]
+    public void ReturnsResults_when_only_must_not_have()
+    {
+      var query = new QueryBundle { MustNotHave = ["bird"] };
+      var result = _searcher.Search(query);
+      Assert.Equal(["doc2"], result);
+    }
+
+    [Fact]
+    public void ReturnsAllDocs_when_must_not_have_terms_not_found()
+    {
+      var query = new QueryBundle { MustNotHave = ["cow"] };
+      var result = _searcher.Search(query);
+      Assert.Equal(["doc1", "doc2", "doc3"], result);
+    }
+  }
   public class IntersectTermDocs
   {
     [Fact]
