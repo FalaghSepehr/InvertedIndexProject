@@ -2,7 +2,7 @@ namespace InvertedIndexProgram;
 
 public class Searcher : ISearchService
 {
-  private IReadOnlyDictionary<string, HashSet<string>> _invertedIndexDic;
+  private readonly IReadOnlyDictionary<string, HashSet<string>> _invertedIndexDic;
 
   public Searcher(IReadOnlyDictionary<string, HashSet<string>> invertedIndexDic)
   {
