@@ -197,6 +197,15 @@ public class SearcherTests
 
     // edge case
     [Fact]
+    public void ReturnsIntersection_when_exclusion_terms_not_found()
+    {
+      // "foundTerm +foundTerm -notFoundTerm"
+      var result = _searcher.BuildResult(true, true, true, ["doc1", "doc2"], ["doc2", "doc3"], []);
+      Assert.Equal(["doc2"], result);
+    }
+
+    // edge case
+    [Fact]
     public void ReturnsAllDocs_when_mustNotHaveTerms_not_found()
     {
       var result = _searcher.BuildResult(false, false, true, [], [], []);
