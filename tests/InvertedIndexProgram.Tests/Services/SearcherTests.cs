@@ -195,7 +195,7 @@ public class SearcherTests
       Assert.Equal([], result);
     }
 
-    // edge case
+    // edge case, maybe redundant
     [Fact]
     public void ReturnsIntersection_when_exclusion_terms_not_found()
     {
