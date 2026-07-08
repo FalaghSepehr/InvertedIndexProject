@@ -197,7 +197,7 @@ public class SearcherTests
 
     // edge case
     [Fact]
-    public void ReturnsAllDocs_when_no_mustHaveTerms_found()
+    public void ReturnsAllDocs_when_mustNotHaveTerms_not_found()
     {
       var result = _searcher.BuildResult(false, false, true, [], [], []);
       Assert.Equal(["doc1", "doc2", "doc3"], result);
