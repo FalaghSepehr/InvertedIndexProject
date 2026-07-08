@@ -132,42 +132,42 @@ public class SearcherTests
     [Fact]
     public void CombinesAllThreeCategories()
     {
-      var result = _searcher.BuildResult(true, true, ["doc1", "doc2"], ["doc2", "doc3"], ["doc3"]);
+      var result = _searcher.BuildResult(true, true, true, ["doc1", "doc2"], ["doc2", "doc3"], ["doc3"]);
       Assert.Equal(["doc2"], result);
     }
 
     [Fact]
     public void ReturnsMustHaveDocs_when_only_must_have()
     {
-      var result = _searcher.BuildResult(true, false, ["doc1", "doc2"], [], []);
+      var result = _searcher.BuildResult(true, false, false, ["doc1", "doc2"], [], []);
       Assert.Equal(["doc1", "doc2"], result);
     }
 
     [Fact]
     public void ReturnsAtLeastOneDocs_when_only_at_least_one()
     {
-      var result = _searcher.BuildResult(false, true, [], ["doc1", "doc2"], []);
+      var result = _searcher.BuildResult(false, true, false, [], ["doc1", "doc2"], []);
       Assert.Equal(["doc1", "doc2"], result);
     }
 
     [Fact]
     public void ReturnsAllDocsExceptExcluded_when_only_must_not_have()
     {
-      var result = _searcher.BuildResult(false, false, [], [], ["doc1"]);
+      var result = _searcher.BuildResult(false, false, true, [], [], ["doc1"]);
       Assert.Equal(["doc2", "doc3"], result);
     }
 
     [Fact]
     public void IntersectsMustHaveAndAtLeastOne()
     {
-      var result = _searcher.BuildResult(true, true, ["doc1", "doc2"], ["doc2", "doc3"], []);
+      var result = _searcher.BuildResult(true, true, false, ["doc1", "doc2"], ["doc2", "doc3"], []);
       Assert.Equal(["doc2"], result);
     }
 
     [Fact]
     public void ReturnsMustHaveMinusExclusions()
     {
-      var result = _searcher.BuildResult(true, false, ["doc1", "doc2"], [], ["doc2"]);
+      var result = _searcher.BuildResult(true, false, true, ["doc1", "doc2"], [], ["doc2"]);
       Assert.Equal(["doc1"], result);
     }
 
@@ -175,7 +175,7 @@ public class SearcherTests
     [Fact]
     public void ReturnsEmpty_when_atLeastOneTerms_not_found()
     {
-      var result = _searcher.BuildResult(true, true, ["doc1", "doc2"], [], []);
+      var result = _searcher.BuildResult(true, true, false, ["doc1", "doc2"], [], []);
       Assert.Equal([], result);
     }
 
@@ -183,7 +183,7 @@ public class SearcherTests
     [Fact]
     public void ReturnsEmpty_when_mustHaveTerms_not_found()
     {
-      var result = _searcher.BuildResult(true, false, [], [], []);
+      var result = _searcher.BuildResult(true, false, false, [], [], []);
       Assert.Equal([], result);
     }
 
@@ -191,8 +191,16 @@ public class SearcherTests
     [Fact]
     public void ReturnsEmpty_when_no_terms_provided()
     {
-      var result = _searcher.BuildResult(false, false, [], [], []);
+      var result = _searcher.BuildResult(false, false, false, [], [], []);
       Assert.Equal([], result);
+    }
+
+    // edge case
+    [Fact]
+    public void ReturnsAllDocs_when_no_mustHaveTerms_found()
+    {
+      var result = _searcher.BuildResult(false, false, true, [], [], []);
+      Assert.Equal(["doc1", "doc2", "doc3"], result);
     }
   }
 }
