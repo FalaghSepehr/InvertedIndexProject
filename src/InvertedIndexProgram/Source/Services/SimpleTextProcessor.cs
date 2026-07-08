@@ -44,7 +44,7 @@ public class SimpleTextProcessor : ITextProcessor
   }
   internal string CleanSymbolsAndNumbers(string term)
   {
-    return _allCharsToRemove.Aggregate(term, (current, c) => current.Replace(c, ' '));
+    return _allCharsToRemove.Aggregate(term, (current, c) => current.Replace(c, ' ')).Trim();
   }
   internal List<string> SplitOnSpaces(string term)
   {
