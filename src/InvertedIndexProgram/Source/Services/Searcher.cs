@@ -12,11 +12,12 @@ public class Searcher : ISearchService
   {
     var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
     var hasAtLeastOneTerms = queryBundle.AtLeastOne.Count > 0;
+    var hasMustNotHaveTerms = queryBundle.MustNotHave.Count > 0;
     var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);
     var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne);
     var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave);
 
-    var result = BuildResult(hasMustHaveTerms, hasAtLeastOneTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
+    var result = BuildResult(hasMustHaveTerms, hasAtLeastOneTerms, hasMustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
 
     return result.OrderBy(v => v).ToList();
   }
@@ -57,9 +58,9 @@ public class Searcher : ISearchService
     }
     return resultSet.ToList();
   }
-  internal List<string> BuildResult(bool hasMustHaveTerms, bool hasAtLeastOneTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
+  internal List<string> BuildResult(bool hasMustHaveTerms, bool hasAtLeastOneTerms, bool hasMustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
   {
-    if (!hasMustHaveTerms && !hasAtLeastOneTerms && mustNotHaveDocs.Count == 0)
+    if (!hasMustHaveTerms && !hasAtLeastOneTerms && !hasMustNotHaveTerms)
     {
       return new List<string>();
     }
