@@ -11,11 +11,12 @@ public class Searcher : ISearchService
   public List<string> Search(QueryBundle queryBundle)
   {
     var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
+    var hasAtLeastOneTerms = queryBundle.AtLeastOne.Count > 0;
     var mustHaveDocs = IntersectTermDocs(queryBundle.MustHave);
     var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne);
     var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave);
 
-    var result = BuildResult(hasMustHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
+    var result = BuildResult(hasMustHaveTerms, hasAtLeastOneTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs);
 
     return result.OrderBy(v => v).ToList();
   }
@@ -56,21 +57,32 @@ public class Searcher : ISearchService
     }
     return resultSet.ToList();
   }
-  internal List<string> BuildResult(bool hasMustHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
+  internal List<string> BuildResult(bool hasMustHaveTerms, bool hasAtLeastOneTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs)
   {
-    if (!hasMustHaveTerms && atLeastOneDocs.Count == 0 && mustNotHaveDocs.Count == 0)
+    if (!hasMustHaveTerms && !hasAtLeastOneTerms && mustNotHaveDocs.Count == 0)
     {
       return new List<string>();
     }
-
+    
     var allDocs = _invertedIndexDic.Values.SelectMany(d => d).Distinct();
-
     List<string> positiveDocs;
+
     if (hasMustHaveTerms)
     {
-      positiveDocs = mustHaveDocs.Count == 0 ? [] : mustHaveDocs.Intersect(atLeastOneDocs.Count > 0 ? atLeastOneDocs : allDocs).ToList();
+      if (mustHaveDocs.Count == 0)
+      {
+        return [];
+      }
+      if (hasAtLeastOneTerms)
+      {
+        positiveDocs = atLeastOneDocs.Count == 0 ? [] : mustHaveDocs.Intersect(atLeastOneDocs).ToList();
+      }
+      else
+      {
+        positiveDocs = mustHaveDocs;
+      }
     }
-    else if (atLeastOneDocs.Count > 0)
+    else if (hasAtLeastOneTerms)
     {
       positiveDocs = atLeastOneDocs;
     }
