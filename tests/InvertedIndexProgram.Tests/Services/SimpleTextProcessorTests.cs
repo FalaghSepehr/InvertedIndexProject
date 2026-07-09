@@ -2,7 +2,7 @@
 
 public class SimpleTextProcessorTests
 {
-  // static fields are safe here because SimpleTextProcessor is immutable.
+  // static fields are safe here because SimpleTextProcessor has immutable state.
   private static readonly SimpleTextProcessor _bareProcessor = new SimpleTextProcessor([], []);
   private static readonly SimpleTextProcessor _processor = new(['.'], ["the"]);
 

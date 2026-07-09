@@ -2,6 +2,8 @@ namespace InvertedIndexProgram.Tests;
 
 public class SearcherTests
 {
+  // static fields are safe here because Searcher has immutable state.
+  // HashSet<string> could be turned into ImmutableHashSet<string> for better safty.
   private static readonly IReadOnlyDictionary<string, HashSet<string>> _invertedIndexDic = new Dictionary<string, HashSet<string>>
   {
     ["cat"] = ["doc1", "doc2"],
@@ -57,7 +59,7 @@ public class SearcherTests
       Assert.Equal(["doc1", "doc2", "doc3"], result);
     }
   }
-  
+
   public class IntersectTermDocs
   {
     [Fact]
