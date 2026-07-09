@@ -57,6 +57,7 @@ public class SearcherTests
       Assert.Equal(["doc1", "doc2", "doc3"], result);
     }
   }
+  
   public class IntersectTermDocs
   {
     [Fact]
