@@ -16,12 +16,16 @@ public class QueryParser : IQueryParser
   }
   public QueryBundle ParseQuery()
   {
-    var queryList = _textProcessor.PrepareTokens(_inputReader.ReadLine());
+    var queryTokens = _textProcessor.PrepareTokens(_inputReader.ReadLine());
+    return Categorize(queryTokens);
+  }
+  internal QueryBundle Categorize(List<string> tokens)
+  {
     var mustHaveTerms = new List<string>();
     var atLeastOneTerms = new List<string>();
     var mustNotHaveTerms = new List<string>();
 
-    foreach (string item in queryList)
+    foreach (string item in tokens)
     {
       switch (item[0])
       {
