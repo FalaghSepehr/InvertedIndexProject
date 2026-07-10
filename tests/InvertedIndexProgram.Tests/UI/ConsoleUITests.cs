@@ -24,7 +24,7 @@ public class ConsoleUITests
   {
     _inputReader.ReadLine().Returns("2");
 
-    _sut.Run();
+    _sut.Run(false);
 
     _outputWriter.Received().WriteLine("Goodbye!");
     _searchService.DidNotReceive().Search(Arg.Any<QueryBundle>());
@@ -35,18 +35,37 @@ public class ConsoleUITests
   {
     _inputReader.ReadLine().Returns("3", "2");
 
-    _sut.Run();
+    _sut.Run(false);
 
     _outputWriter.Received().WriteLine("Invalid Number!");
     _outputWriter.Received().WriteLine("Goodbye!");
   }
 
+  // edge case
   [Fact]
-  public void ShowMenu_ShowsTwoOptions()
+  public void Run_ShowsEmptyMessageAndExits_when_index_empty()
   {
-    _sut.ShowMenu();
+    _sut.Run(true);
+
+    _outputWriter.Received().WriteLine("\n=================\nIndex is empty!\nGoodbye!\n=================");
+    _searchService.DidNotReceive().Search(Arg.Any<QueryBundle>());
+  }
+
+  [Fact]
+  public void ShowMenu_ShowsTwoOptions_when_index_not_empty()
+  {
+    _sut.ShowMenu(false);
 
     _outputWriter.Received().WriteLine("\n=================\nMenu\n1. Search\n2. Exit\n=================");
+  }
+
+  // edge case
+  [Fact]
+  public void ShowMenu_ShowsEmptyMessage_when_index_empty()
+  {
+    _sut.ShowMenu(true);
+
+    _outputWriter.Received().WriteLine("\n=================\nIndex is empty!\nGoodbye!\n=================");
   }
 
   [Fact]
