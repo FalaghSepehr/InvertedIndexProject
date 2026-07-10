@@ -17,9 +17,7 @@ public class SimpleTextProcessor : ITextProcessor
   {
     _symbols = symbols;
     _stopWords = stopWords;
-    _allCharsToRemove = new char[_symbols.Length + _numbers.Length];
-    _symbols.CopyTo(_allCharsToRemove, 0);
-    _numbers.CopyTo(_allCharsToRemove, _symbols.Length);
+    _allCharsToRemove = _symbols.Concat(_numbers).ToArray();
   }
   public List<string> ExtractTerms(string rawText)
   {
