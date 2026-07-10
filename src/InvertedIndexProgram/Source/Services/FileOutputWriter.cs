@@ -1,6 +1,6 @@
 namespace InvertedIndexProgram;
 /// <summary>
-/// Writes output messages to a file.
+/// Creates the output file and writes output messages to the file.
 /// </summary>
 public class FileOutputWriter : IOutputWriter
 {
