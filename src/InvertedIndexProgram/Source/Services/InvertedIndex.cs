@@ -46,6 +46,12 @@ public class InvertedIndex
   /// <param name="writer">The output writer to receive the formatted index.</param>
   public void ExportTo(IOutputWriter writer)
   {
+    if (InvertedIndexDic.Count == 0)
+    {
+      writer.WriteLine("Empty Inverted_Index");
+      return;
+    }
+
     foreach (var pair in InvertedIndexDic)
     {
       writer.WriteLine(FormatEntry(pair));
