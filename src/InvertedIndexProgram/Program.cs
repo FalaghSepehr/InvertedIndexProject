@@ -41,7 +41,12 @@ class Program
     {
       throw new InvalidOperationException($"Documents directory not found at: {docsDir}");
     }
-    return Directory.GetFiles(docsDir);
+    var files = Directory.GetFiles(docsDir);
+    if (files.Length == 0)
+    {
+      throw new InvalidOperationException($"No documents found in: {docsDir}");
+    }
+    return files;
   }
   internal static char[] LoadSymbols(string path)
   {
