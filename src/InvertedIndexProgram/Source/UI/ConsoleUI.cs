@@ -32,7 +32,7 @@ public class ConsoleUI
       }
     } while (true);
   }
-  private void ShowMenu()
+  internal void ShowMenu()
   {
     _outputWriter.WriteLine("\n=================\nMenu\n1. Search\n2. Exit\n=================");
   }
@@ -48,7 +48,7 @@ public class ConsoleUI
           shouldExit = false;
           break;
         case 2:
-          _outputWriter.WriteLine("GoodBye!");
+          _outputWriter.WriteLine("Goodbye!");
           shouldExit = true;
           break;
         default:
