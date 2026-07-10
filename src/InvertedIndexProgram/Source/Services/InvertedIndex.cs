@@ -8,7 +8,7 @@ public class InvertedIndex
   private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
   public IReadOnlyDictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
 
-  private InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
+  internal InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
   {
     _invertedIndexDic = invertedIndexDic;
   }
@@ -51,7 +51,7 @@ public class InvertedIndex
       writer.WriteLine(FormatEntry(pair));
     }
   }
-  private string FormatEntry(KeyValuePair<string, HashSet<string>> pair)
+  internal string FormatEntry(KeyValuePair<string, HashSet<string>> pair)
   {
     return $"\"{pair.Key}\":\n\t{string.Join(", ", pair.Value.OrderBy(v => v))}";
   }
