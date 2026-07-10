@@ -42,7 +42,9 @@ class Program
 
     invertedIndex.ExportTo(fileWriter);
 
-    Console.WriteLine($"Index written to {config.OutputPath}");
+    var consoleWriter = provider.GetRequiredService<IOutputWriter>();
+    consoleWriter.WriteLine($"Index written to {config.OutputPath}");
+    
     consoleUI.Run(invertedIndex.IsEmpty);
   }
   /// <summary>
