@@ -7,6 +7,7 @@ public class InvertedIndex
 {
   private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
   public IReadOnlyDictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
+  public bool IsEmpty => _invertedIndexDic.Count == 0;
 
   internal InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
   {
@@ -46,7 +47,7 @@ public class InvertedIndex
   /// <param name="writer">The output writer to receive the formatted index.</param>
   public void ExportTo(IOutputWriter writer)
   {
-    if (InvertedIndexDic.Count == 0)
+    if (IsEmpty)
     {
       writer.WriteLine("Empty Inverted_Index");
       return;

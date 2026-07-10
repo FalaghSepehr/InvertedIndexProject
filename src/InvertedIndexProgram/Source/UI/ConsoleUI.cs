@@ -20,11 +20,15 @@ public class ConsoleUI
   /// <summary>
   /// Starts the menu loop and processes user input until exit is requested.
   /// </summary>
-  public void Run()
+  public void Run(bool indexIsEmpty)
   {
     do
     {
-      ShowMenu();
+      ShowMenu(indexIsEmpty);
+      if (indexIsEmpty)
+      {
+        break;
+      }
       HandleInput(out var shouldExit);
       if (shouldExit)
       {
@@ -32,9 +36,15 @@ public class ConsoleUI
       }
     } while (true);
   }
-  internal void ShowMenu()
+  internal void ShowMenu(bool indexIsEmpty)
   {
+    if (indexIsEmpty)
+    {
+      _outputWriter.WriteLine("\n=================\nIndex is empty!\nGoodbye!\n=================");
+      return;
+    }
     _outputWriter.WriteLine("\n=================\nMenu\n1. Search\n2. Exit\n=================");
+
   }
   internal void HandleInput(out bool shouldExit)
   {

@@ -3,6 +3,7 @@ global using System.Collections.Generic;
 global using System.IO;
 global using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace InvertedIndexProgram;
 
@@ -13,21 +14,36 @@ class Program
   {
     var config = LoadConfig();
 
-    IOutputWriter consoleOutputWriter = new ConsoleOutputWriter();
-    IOutputWriter fileOutputWriter = new FileOutputWriter(config.OutputPath);
-    IInputReader consoleInputReader = new ConsoleInputReader();
-    ITextProcessor simpleTextProcessor = new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords);
+    var services = new ServiceCollection();
 
-    var invertedIndex = InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), simpleTextProcessor);
-    ISearchService searhcer = new Searcher(invertedIndex.InvertedIndexDic);
-    IQueryParser queryParser = new QueryParser(simpleTextProcessor, consoleInputReader);
+    services.AddSingleton(config);
+    services.AddSingleton<IOutputWriter, ConsoleOutputWriter>();
+    services.AddSingleton<IInputReader, ConsoleInputReader>();
+    services.AddSingleton<ITextProcessor>(new SimpleTextProcessor(config.SymbolsAndNumbers, config.StopWords));
+    services.AddSingleton(sp =>
+    {
+      var textProcessor = sp.GetRequiredService<ITextProcessor>();
+      return InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), textProcessor);
+    });
+    services.AddSingleton<ISearchService>(sp =>
+    {
+      var invertedIndex = sp.GetRequiredService<InvertedIndex>();
+      return new Searcher(invertedIndex.InvertedIndexDic);
+    });
+    services.AddSingleton<IQueryParser, QueryParser>();
+    services.AddSingleton<ConsoleUI>();
 
-    var consoleUI = new ConsoleUI(searhcer, queryParser, consoleInputReader, consoleOutputWriter);
+    var provider = services.BuildServiceProvider();
 
-    invertedIndex.ExportTo(fileOutputWriter);
-    consoleOutputWriter.WriteLine($"Index written to {config.OutputPath}");
+    var invertedIndex = provider.GetRequiredService<InvertedIndex>();
+    var consoleUI = provider.GetRequiredService<ConsoleUI>();
 
-    consoleUI.Run();
+    var fileWriter = new FileOutputWriter(config.OutputPath);
+
+    invertedIndex.ExportTo(fileWriter);
+
+    Console.WriteLine($"Index written to {config.OutputPath}");
+    consoleUI.Run(invertedIndex.IsEmpty);
   }
   /// <summary>
   /// Gets seperate documnet paths stored in the given directory.
