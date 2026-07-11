@@ -31,13 +31,32 @@ public class SimpleTextProcessor : ITextProcessor
   }
   public List<string> NormalizeTerms(List<string> terms)
   {
-    return terms
-        .Select(CleanSymbolsAndNumbers)
-        .SelectMany(SplitOnSpaces)
-        .Where(IsIndexable)
-        .Select(Stem)
-        .ToList();
+    var cleaned = RemoveSymbolsFromAll(terms);
+    var split = SplitAllOnSpaces(cleaned);
+    var filtered = RemoveUnwantedTerms(split);
+    return StemAll(filtered);
   }
+
+  private List<string> RemoveSymbolsFromAll(List<string> terms)
+  {
+    return terms.Select(CleanSymbolsAndNumbers).ToList();
+  }
+
+  private List<string> SplitAllOnSpaces(List<string> terms)
+  {
+    return terms.SelectMany(SplitOnSpaces).ToList();
+  }
+
+  private List<string> RemoveUnwantedTerms(List<string> terms)
+  {
+    return terms.Where(IsIndexable).ToList();
+  }
+
+  private List<string> StemAll(List<string> terms)
+  {
+    return terms.Select(Stem).ToList();
+  }
+  
   internal List<string> Tokenize(string text)
   {
     return text.Split([' ', '\t', '\n', '\r'], StringSplitOptions.RemoveEmptyEntries).ToList();
