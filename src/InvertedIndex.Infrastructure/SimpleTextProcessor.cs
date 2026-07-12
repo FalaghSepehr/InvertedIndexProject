@@ -1,6 +1,8 @@
+using InvertedIndex.Core;
+
 using PorterStemmer.Stemmers;
 
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Provides basic text processing by cleaning symbols and numbers, removing stop words,
 /// and applying Porter stemming. Implements <see cref="ITextProcessor"/>.

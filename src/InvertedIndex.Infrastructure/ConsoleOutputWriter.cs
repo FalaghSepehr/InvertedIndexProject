@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Writes output messages to the console.
 /// </summary>

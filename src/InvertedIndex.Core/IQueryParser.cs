@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 
 /// <summary>
 /// Parses a raw query string into a structured <see cref="QueryBundle"/>.

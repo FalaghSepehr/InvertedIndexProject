@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 
 public class Searcher : ISearchService
 {

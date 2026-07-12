@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 /// <summary>
 /// Writes a meesage to an output destination.
 /// </summary>

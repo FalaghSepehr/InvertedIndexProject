@@ -1,6 +1,8 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/InvertedIndexProgram/InvertedIndexProgram.csproj" />
+    <Project Path="src/InvertedIndex.Core/InvertedIndex.Core.csproj" />
+    <Project Path="src/InvertedIndex.Infrastructure/InvertedIndex.Infrastructure.csproj" />
+    <Project Path="src/InvertedIndex.Console/InvertedIndex.Console.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/InvertedIndexProgram.Tests/InvertedIndexProgram.Tests.csproj" />

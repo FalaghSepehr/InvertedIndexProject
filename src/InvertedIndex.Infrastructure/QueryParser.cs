@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Parses a raw query string into a <see cref="QueryBundle"/> by categorizing terms
 /// by prefix: + (at-least-one), - (must-not-have), and bare (must-have).

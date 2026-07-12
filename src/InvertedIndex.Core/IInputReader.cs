@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 /// <summary>
 /// Reads a line of input from an input source.
 /// </summary>

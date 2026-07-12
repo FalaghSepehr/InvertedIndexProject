@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Console;
 /// <summary>
 /// Console-based user interface that displays a menu and handles user input
 /// for searching the inverted index. Communicates results via an

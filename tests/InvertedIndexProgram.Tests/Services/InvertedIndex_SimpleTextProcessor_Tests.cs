@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace InvertedIndexProgram.Tests;
 
 public class InvertedIndex_SimpleTextProcessor_Tests
@@ -20,7 +18,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
     Directory.CreateDirectory(tempDocumentsDir);
     File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "cat dog");
 
-    var sut = InvertedIndex.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
+    var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>
     {
@@ -42,7 +40,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
     File.WriteAllText(Path.Combine(tempDocumentsDir, "doc2"), "cat dog");
     File.WriteAllText(Path.Combine(tempDocumentsDir, "doc3"), "bird cat");
 
-    var sut = InvertedIndex.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
+    var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>
     {
@@ -64,7 +62,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
     Directory.CreateDirectory(tempDocumentsDir);
     File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "the is after . x");
 
-    var sut = InvertedIndex.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
+    var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>([]);
 
@@ -82,7 +80,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
       ["bird"] = ["doc3", "doc1"]
     };
 
-    var sut = new InvertedIndex(invertedIndexDic);
+    var sut = new InvertedIndexBuilder(invertedIndexDic);
 
     sut.ExportTo(_outputWriter);
 
@@ -97,7 +95,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
   {
     var invertedIndexDic = new Dictionary<string, HashSet<string>>([]);
 
-    var sut = new InvertedIndex(invertedIndexDic);
+    var sut = new InvertedIndexBuilder(invertedIndexDic);
 
     sut.ExportTo(_outputWriter);
 
@@ -107,7 +105,7 @@ public class InvertedIndex_SimpleTextProcessor_Tests
   [Fact]
   public void FormatEntry_FormatsPairWithOrderedDocs()
   {
-    var sut = new InvertedIndex([]);
+    var sut = new InvertedIndexBuilder([]);
 
     var pair = new KeyValuePair<string, HashSet<string>>("cat", ["doc3", "doc1", "doc2"]);
 

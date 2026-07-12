@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Creates the output file and writes output messages to the file.
 /// </summary>

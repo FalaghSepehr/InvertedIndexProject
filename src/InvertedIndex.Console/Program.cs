@@ -1,11 +1,10 @@
-﻿global using System;
-global using System.Collections.Generic;
-global using System.IO;
-global using System.Linq;
+﻿using InvertedIndex.Core;
+using InvertedIndex.Infrastructure;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Console;
 
 class Program
 {
@@ -23,11 +22,11 @@ class Program
     services.AddSingleton(sp =>
     {
       var textProcessor = sp.GetRequiredService<ITextProcessor>();
-      return InvertedIndex.Build(GetDocumentPathsArray(config.DocumentsDir), textProcessor);
+      return InvertedIndexBuilder.Build(GetDocumentPathsArray(config.DocumentsDir), textProcessor);
     });
     services.AddSingleton<ISearchService>(sp =>
     {
-      var invertedIndex = sp.GetRequiredService<InvertedIndex>();
+      var invertedIndex = sp.GetRequiredService<InvertedIndexBuilder>();
       return new Searcher(invertedIndex.InvertedIndexDic);
     });
     services.AddSingleton<IQueryParser, QueryParser>();
@@ -35,7 +34,7 @@ class Program
 
     var provider = services.BuildServiceProvider();
 
-    var invertedIndex = provider.GetRequiredService<InvertedIndex>();
+    var invertedIndex = provider.GetRequiredService<InvertedIndexBuilder>();
     var consoleUI = provider.GetRequiredService<ConsoleUI>();
 
     var fileWriter = new FileOutputWriter(config.OutputPath);

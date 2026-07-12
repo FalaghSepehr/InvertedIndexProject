@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 /// <summary>
 /// Processes raw text into terms suitable for indexing and search.
 /// Implementations define their own strategy for tokenization, normalization,

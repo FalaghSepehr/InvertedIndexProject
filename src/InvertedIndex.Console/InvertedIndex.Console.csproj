@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>InvertedIndex_Program</RootNamespace>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
@@ -12,7 +12,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
     <PackageReference Include="PorterStemmer" Version="1.0.0" />
-    <InternalsVisibleTo Include="InvertedIndexProgram.Tests" />
 
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -23,6 +22,15 @@
     <None Update="Documents\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InvertedIndex.Core\InvertedIndex.Core.csproj" />
+    <ProjectReference Include="..\InvertedIndex.Infrastructure\InvertedIndex.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="InvertedIndexProgram.Tests" />
   </ItemGroup>
 
 </Project>

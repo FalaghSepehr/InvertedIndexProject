@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -24,7 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\InvertedIndexProgram\InvertedIndexProgram.csproj" />
+    <ProjectReference Include="..\..\src\InvertedIndex.Core\InvertedIndex.Core.csproj" />
+    <ProjectReference Include="..\..\src\InvertedIndex.Infrastructure\InvertedIndex.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\InvertedIndex.Console\InvertedIndex.Console.csproj" />
   </ItemGroup>
 
 </Project>

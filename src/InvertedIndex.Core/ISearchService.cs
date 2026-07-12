@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 /// <summary>
 /// Searches an inverted index using a structured query and returns matching document names.
 /// </summary>

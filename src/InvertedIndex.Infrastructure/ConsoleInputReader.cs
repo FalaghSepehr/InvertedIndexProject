@@ -1,4 +1,6 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Reads input from console.
 /// Returns an empty string if the input is null.

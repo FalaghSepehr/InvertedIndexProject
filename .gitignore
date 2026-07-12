@@ -1,9 +1,5 @@
-# Build output
-src/InvertedIndexProgram/bin/
-src/InvertedIndexProgram/obj/
-src/InvertedIndexProgram/Documents
-src/InvertedIndexProgram/InvertedIndexProgram.csproj.lscache
+*.lscache
+*bin
+*obj
 
-tests/InvertedIndexProgram.Tests/bin/
-tests/InvertedIndexProgram.Tests/obj/
-tests/InvertedIndexProgram.Tests/InvertedIndexProgram.Tests.csproj.lscache
+src/InvertedIndex.Console/Documents

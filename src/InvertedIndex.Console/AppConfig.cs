@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Console;
 /// <summary>
 /// Holds configuration settings loaded from appsettings.json at startup.
 /// </summary>

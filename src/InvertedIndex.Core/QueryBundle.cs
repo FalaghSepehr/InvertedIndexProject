@@ -1,4 +1,4 @@
-namespace InvertedIndexProgram;
+namespace InvertedIndex.Core;
 /// <summary>
 /// Holds the three categories of terms parsed from a user query:
 /// must-have, at-least-one, and must-not-have.

@@ -1,15 +1,17 @@
-namespace InvertedIndexProgram;
+using InvertedIndex.Core;
+
+namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Builds and queries an inverted index from text documents.
 /// Accepts an <see cref="ITextProcessor"/> for term extraction, enabling different text processing strategies.
 /// </summary>
-public class InvertedIndex
+public class InvertedIndexBuilder
 {
   private readonly Dictionary<string, HashSet<string>> _invertedIndexDic;
   public IReadOnlyDictionary<string, HashSet<string>> InvertedIndexDic => _invertedIndexDic;
   public bool IsEmpty => _invertedIndexDic.Count == 0;
 
-  internal InvertedIndex(Dictionary<string, HashSet<string>> invertedIndexDic)
+  internal InvertedIndexBuilder(Dictionary<string, HashSet<string>> invertedIndexDic)
   {
     _invertedIndexDic = invertedIndexDic;
   }
@@ -19,7 +21,7 @@ public class InvertedIndex
   /// <param name="docPaths">Array of file paths to text documents.</param>
   /// <param name="textProcessor">The text processor for tokenizing and normalizing terms.</param>
   /// <returns>A fully built InvertedIndex ready for searching.</returns>
-  public static InvertedIndex Build(string[] docPaths, ITextProcessor textProcessor)
+  public static InvertedIndexBuilder Build(string[] docPaths, ITextProcessor textProcessor)
   {
     var invertedIndexDic = new Dictionary<string, HashSet<string>>();
 
@@ -39,7 +41,7 @@ public class InvertedIndex
         documents.Add(fileName);
       }
     }
-    return new InvertedIndex(invertedIndexDic);
+    return new InvertedIndexBuilder(invertedIndexDic);
   }
   /// <summary>
   /// Exports the entire index to the specified output writer for debugging or external use.
