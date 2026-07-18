@@ -29,9 +29,12 @@ public class InvertedIndexBuilder
     {
       var fileName = Path.GetFileNameWithoutExtension(docFileDir);
       var content = File.ReadAllText(docFileDir);
-      var terms = textProcessor.ExtractTerms(content);
+      
+      var rawTokens = textProcessor.GetRawTokens(content);
+      var processedTokens = textProcessor.ExtractTerms(content);
+      var allTokens = rawTokens.Concat(processedTokens);
 
-      foreach (string term in terms)
+      foreach (string term in allTokens)
       {
         if (!invertedIndexDic.TryGetValue(term, out var documents))
         {
