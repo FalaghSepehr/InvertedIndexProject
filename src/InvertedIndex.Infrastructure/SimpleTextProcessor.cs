@@ -41,7 +41,7 @@ public class SimpleTextProcessor : ITextProcessor
 
   public List<string> GetRawTokens(string rawText)
   {
-    return [];
+    return Tokenize(rawText);
   }
 
   private List<string> RemoveSymbolsAndNumbersFromAll(List<string> terms)

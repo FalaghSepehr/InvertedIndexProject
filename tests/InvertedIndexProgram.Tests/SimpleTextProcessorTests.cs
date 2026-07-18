@@ -11,7 +11,7 @@ public class SimpleTextProcessorTests
     [Fact]
     public void HandlesStopWordsSymbolsAndNumbers()
     {
-      var result = _processor.ExtractTerms("  The cat is running.  ");
+      var result = _processor.ExtractTerms("  The cat is running. 2 ");
       Assert.Equal(["cat", "run"], result);
     }
 
@@ -46,29 +46,6 @@ public class SimpleTextProcessorTests
       Assert.Equal("hello world", result);
     }
   }
-  // public class IsIndexable
-  // {
-  //   [Fact]
-  //   public void ReturnsFalse_if_length_less_than_3()
-  //   {
-  //     var result = _processor.NotStopWords("ab");
-  //     Assert.False(result);
-  //   }
-
-  //   [Fact]
-  //   public void ReturnsFalse_if_stop_word()
-  //   {
-  //     var result = _processor.NotStopWords("the");
-  //     Assert.False(result);
-  //   }
-
-  //   [Fact]
-  //   public void ReturnsTrue_if_length_more_than_2_and_not_stop_word()
-  //   {
-  //     var result = _processor.NotStopWords("hello");
-  //     Assert.True(result);
-  //   }
-  // }
 
   [Fact]
   public void SplitOnSpaces_SingleSpace_SplitsCorrectly()
@@ -82,5 +59,36 @@ public class SimpleTextProcessorTests
   {
     var result = _bareProcessor.Stem("running");
     Assert.Equal("run", result);
+  }
+
+  [Fact]
+  public void GetRawTokens_SplitsOnAllWhiteSpace()
+  {
+    var result = _bareProcessor.GetRawTokens("hello\tworld\nfoo\rbar goo");
+
+    Assert.Equal(["hello", "world", "foo", "bar", "goo"], result);
+  }
+
+  [Fact]
+  public void GetRawTokens_DoesNotCareAboutSymbolsAndNumbers()
+  {
+    var result = _processor.GetRawTokens("hello2.");
+
+    Assert.Equal(["hello2."], result);
+  }
+
+  [Fact]
+  public void GetRawTokens_DoesNotCareAboutStopWords()
+  {
+    var result = _processor.GetRawTokens("hello the");
+
+    Assert.Equal(["hello", "the"], result);
+  }
+
+  [Fact]
+  public void GetRawTokens_DoesNotStem()
+  {
+    var result = _bareProcessor.GetRawTokens("running");
+    Assert.Equal(["running"], result);
   }
 }
