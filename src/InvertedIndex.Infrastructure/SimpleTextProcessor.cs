@@ -41,10 +41,7 @@ public class SimpleTextProcessor : ITextProcessor
 
   public List<string> GetRawTokens(string rawText)
   { 
-    var terms = Tokenize(rawText);
-    var cleaned = RemoveSymbolsAndNumbersFromAll(terms);
-    var split = SplitAllOnSpaces(cleaned);
-    return split;
+    return Tokenize(rawText);
   }
 
   private List<string> RemoveSymbolsAndNumbersFromAll(List<string> terms)
