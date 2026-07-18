@@ -14,35 +14,69 @@ public class QueryParserTests
   }
 
   [Fact]
-  public void ParseQuery_ReadsInputAndReturnsCategorizedBundle()
+  public void ParseQuery_HandlesBothNormalQueriesAndExactPhraseQueries()
   {
-    _inputReader.ReadLine().Returns("cat +dog -bird");
-    _textProcessor.PrepareTokens("cat +dog -bird").Returns(["cat", "+dog", "-bird"]);
+    _inputReader.ReadLine().Returns("\"Running\" cat +dog -bird");
+    _textProcessor.GetRawTokens("\"Running\" cat +dog -bird").Returns(["\"Running\"", "cat", "+dog", "-bird"]);
     _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
 
     var result = _sut.ParseQuery();
 
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "cat" })));
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "dog" })));
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "bird" })));
+
+    Assert.Equal(["Running", "cat"], result.MustHave);
+    Assert.Equal(["dog"], result.AtLeastOne);
+    Assert.Equal(["bird"], result.MustNotHave);
+  }
+
+  [Fact]
+  public void ParseQuery_HandlesOnlyNormalQueries()
+  {
+    _inputReader.ReadLine().Returns("cat +dog -bird");
+    _textProcessor.GetRawTokens("cat +dog -bird").Returns(["cat", "+dog", "-bird"]);
+    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
+
+    var result = _sut.ParseQuery();
+
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "cat" })));
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "dog" })));
+    _textProcessor.Received().NormalizeTerms(Arg.Is<List<string>>(l => l.SequenceEqual(new List<string> { "bird" })));
+
     Assert.Equal(["cat"], result.MustHave);
     Assert.Equal(["dog"], result.AtLeastOne);
     Assert.Equal(["bird"], result.MustNotHave);
+  }
+
+  [Fact]
+  public void ParseQuery_HandlesOnlyExactPhraseQueries()
+  {
+    _inputReader.ReadLine().Returns("\"Running\" +\"Cat\" -\"dog.2\"");
+    _textProcessor.GetRawTokens("\"Running\" +\"Cat\" -\"dog.2\"").Returns(["\"Running\"", "+\"Cat\"", "-\"dog.2\""]);
+
+
+    var result = _sut.ParseQuery();
+
+    _textProcessor.DidNotReceive().NormalizeTerms(Arg.Any<List<string>>());
+    Assert.Equal(["Running"], result.MustHave);
+    Assert.Equal(["Cat"], result.AtLeastOne);
+    Assert.Equal(["dog.2"], result.MustNotHave);
   }
 
   [Fact]
   public void Categorize_HandlesAllThree()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
-
-    var result = _sut.Categorize(["cat", "+dog", "-bird"]);
+    var result = _sut.Categorize(["cat", "+dog", "-Running"]);
 
     Assert.Equal(["cat"], result.MustHave);
     Assert.Equal(["dog"], result.AtLeastOne);
-    Assert.Equal(["bird"], result.MustNotHave);
+    Assert.Equal(["Running"], result.MustNotHave);
   }
 
   [Fact]
-  public void Categorize_HandlesOnlyBareTerms()
+  public void Categorize_HandlesOnlyMustHaveTerms()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
     var result = _sut.Categorize(["cat", "dog"]);
     Assert.Equal(["cat", "dog"], result.MustHave);
     Assert.Equal([], result.AtLeastOne);
@@ -52,7 +86,6 @@ public class QueryParserTests
   [Fact]
   public void Categorize_HandlesOnlyAtLeastOneTerms()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
     var result = _sut.Categorize(["+cat", "+dog"]);
     Assert.Equal([], result.MustHave);
     Assert.Equal(["cat", "dog"], result.AtLeastOne);
@@ -62,7 +95,6 @@ public class QueryParserTests
   [Fact]
   public void Categorize_HandlesOnlyMustNotHaveTerms()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
     var result = _sut.Categorize(["-cat", "-dog"]);
     Assert.Equal([], result.MustHave);
     Assert.Equal([], result.AtLeastOne);
@@ -72,19 +104,27 @@ public class QueryParserTests
   [Fact]
   public void Categorize_HandlesEmptyInput()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
     var result = _sut.Categorize([]);
     Assert.Equal([], result.MustHave);
     Assert.Equal([], result.AtLeastOne);
     Assert.Equal([], result.MustNotHave);
   }
 
+  [Fact]
+  public void Categorize_DoesNotNormalize()
+  {
+    var result = _sut.Categorize(["bird", "\"Running\"", "+dog.", "-cat1"]);
+
+    _textProcessor.DidNotReceive().NormalizeTerms(Arg.Any<List<string>>());
+    Assert.Equal(["bird", "\"Running\""], result.MustHave);
+    Assert.Equal(["dog."], result.AtLeastOne);
+    Assert.Equal(["cat1"], result.MustNotHave);
+  }
+
   //edge case
   [Fact]
   public void Categorize_IgnoresPrefixOnlyItems()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
-
     var result = _sut.Categorize(["+", "-"]);
 
     Assert.Equal([], result.MustHave);
@@ -96,7 +136,6 @@ public class QueryParserTests
   [Fact]
   public void Categorize_IgnoresPrefixOnlyAndKeepsOthers()
   {
-    _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
     var result = _sut.Categorize(["+dog", "+", "cat", "-"]);
     Assert.Equal(["cat"], result.MustHave);
     Assert.Equal(["dog"], result.AtLeastOne);
