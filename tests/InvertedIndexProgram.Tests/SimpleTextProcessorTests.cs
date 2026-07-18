@@ -61,34 +61,52 @@ public class SimpleTextProcessorTests
     Assert.Equal("run", result);
   }
 
-  [Fact]
-  public void GetRawTokens_SplitsOnAllWhiteSpace()
+  public class GetRawTokens
   {
-    var result = _bareProcessor.GetRawTokens("hello\tworld\nfoo\rbar goo");
+    [Fact]
+    public void SplitsOnAllWhiteSpace()
+    {
+      var result = _bareProcessor.GetRawTokens("hello\tworld\nfoo\rbar goo");
 
-    Assert.Equal(["hello", "world", "foo", "bar", "goo"], result);
-  }
+      Assert.Equal(["hello", "world", "foo", "bar", "goo"], result);
+    }
 
-  [Fact]
-  public void GetRawTokens_DoesNotCareAboutSymbolsAndNumbers()
-  {
-    var result = _processor.GetRawTokens("hello2.");
+    [Fact]
+    public void PreservesCase()
+    {
+      var result = _processor.GetRawTokens("Hello");
 
-    Assert.Equal(["hello2."], result);
-  }
+      Assert.Equal(["Hello"], result);
+    }
 
-  [Fact]
-  public void GetRawTokens_DoesNotCareAboutStopWords()
-  {
-    var result = _processor.GetRawTokens("hello the");
+    [Fact]
+    public void DoesNotCareAboutStopWords()
+    {
+      var result = _processor.GetRawTokens("hello the");
 
-    Assert.Equal(["hello", "the"], result);
-  }
+      Assert.Equal(["hello", "the"], result);
+    }
 
-  [Fact]
-  public void GetRawTokens_DoesNotStem()
-  {
-    var result = _bareProcessor.GetRawTokens("running");
-    Assert.Equal(["running"], result);
+    [Fact]
+    public void DoesNotStem()
+    {
+      var result = _bareProcessor.GetRawTokens("running");
+      Assert.Equal(["running"], result);
+    }
+
+    [Fact]
+    public void SplitsOnSymbolsAndNumberWithinTerms()
+    {
+      var result = _processor.GetRawTokens("cat.2dog");
+      Assert.Equal(["cat", "dog"], result);
+    }
+
+    //edge case
+    [Fact]
+    public void IgnoresEmptyTokensFromLeadingTrailingSymbols()
+    {
+      var result = _processor.GetRawTokens(".hello.");
+      Assert.Equal(["hello"], result);
+    }
   }
 }
