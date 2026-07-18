@@ -54,19 +54,51 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
     Directory.Delete(tempDocumentsDir, true);
   }
 
-  //edge case
   [Fact]
-  public void Build_CreatesEmptyIndex_when_no_terms_indexable()
+  public void Build_IndexesBothRawTokensAndProcessedTokens()
   {
     var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     Directory.CreateDirectory(tempDocumentsDir);
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "the is after . x");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "The Cats\tRunning.2dog\n .hello. \rMac");
+
+    var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
+
+    var expectedDictionary = new Dictionary<string, HashSet<string>>
+    {
+      // raw terms:
+      ["The"] = ["doc1"],
+      ["Cats"] = ["doc1"],
+      ["Running"] = ["doc1"],
+      ["dog"] = ["doc1"],
+      ["hello"] = ["doc1"],
+      ["Mac"] = ["doc1"],
+
+      //non-duplicate processed terms:
+      ["cat"] = ["doc1"],
+      ["run"] = ["doc1"],
+      ["mac"] = ["doc1"],
+    };
+
+    Assert.Equal(expectedDictionary, sut.InvertedIndexDic);
+
+    Directory.Delete(tempDocumentsDir, true);
+  }
+
+  //edge case
+  [Fact]
+  public void Build_CreatesEmptyIndex_when_file_has_no_content()
+  {
+    var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+    Directory.CreateDirectory(tempDocumentsDir);
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "");
 
     var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>([]);
 
     Assert.Equal(expectedDictionary, sut.InvertedIndexDic);
+
+    Directory.Delete(tempDocumentsDir, true);
   }
 
   // unit tests:
