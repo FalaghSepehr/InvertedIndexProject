@@ -28,4 +28,6 @@ public interface ITextProcessor
   /// <param name="rawText">The raw input string.</param>
   /// <returns>A list of raw tokens.</returns>
   List<string> PrepareTokens(string rawText);
+
+  List<string> GetRawTokens(string rawText);
 }

@@ -39,6 +39,11 @@ public class SimpleTextProcessor : ITextProcessor
     return StemAll(filtered);
   }
 
+  public List<string> GetRawTokens(string rawText)
+  {
+    return [];
+  }
+
   private List<string> RemoveSymbolsAndNumbersFromAll(List<string> terms)
   {
     return terms.Select(CleanSymbolsAndNumbers).ToList();
