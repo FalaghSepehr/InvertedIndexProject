@@ -18,8 +18,19 @@ public class QueryParser : IQueryParser
   }
   public QueryBundle ParseQuery()
   {
-    var queryTokens = _textProcessor.PrepareTokens(_inputReader.ReadLine());
-    return Categorize(queryTokens);
+    var rawInputText = _inputReader.ReadLine();
+    Console.WriteLine($"Raw input: {rawInputText}");
+
+    var queryTokens = _textProcessor.GetRawTokens(rawInputText);
+    Console.WriteLine($"Tokens: {string.Join(", ", queryTokens)}");
+
+    var categorizedTokens = Categorize(queryTokens);
+    Console.WriteLine($"MustHave after categorize: {string.Join(", ", categorizedTokens.MustHave)}");
+
+    var result = NormalizeNonExactTokens(categorizedTokens);
+    Console.WriteLine($"MustHave after normalize: {string.Join(", ", result.MustHave)}");
+
+    return result;
   }
   internal QueryBundle Categorize(List<string> tokens)
   {
@@ -51,9 +62,44 @@ public class QueryParser : IQueryParser
 
     return new QueryBundle
     {
-      MustHave = _textProcessor.NormalizeTerms(mustHaveTerms),
-      AtLeastOne = _textProcessor.NormalizeTerms(atLeastOneTerms),
-      MustNotHave = _textProcessor.NormalizeTerms(mustNotHaveTerms)
+      MustHave = mustHaveTerms,
+      AtLeastOne = atLeastOneTerms,
+      MustNotHave = mustNotHaveTerms
     };
+  }
+
+  internal QueryBundle NormalizeNonExactTokens(QueryBundle bundle)
+  {
+    return new QueryBundle
+    {
+      MustHave = NormalizeCategory(bundle.MustHave),
+      AtLeastOne = NormalizeCategory(bundle.AtLeastOne),
+      MustNotHave = NormalizeCategory(bundle.MustNotHave)
+    };
+  }
+
+  private List<string> NormalizeCategory(List<string> terms)
+  {
+    var exact = new List<string>();
+    var nonExact = new List<string>();
+
+    foreach (var term in terms)
+    {
+      if (term.StartsWith('"') && term.EndsWith('"') && term.Length > 1)
+      {
+        exact.Add(term.Substring(1, term.Length - 2)); // strip quotes
+      }
+      else
+      {
+        nonExact.Add(term);
+      }
+    }
+
+    if (nonExact.Count > 0)
+    {
+      var normalized = _textProcessor.NormalizeTerms(nonExact);
+      exact.AddRange(normalized);
+    }
+    return exact;
   }
 }
