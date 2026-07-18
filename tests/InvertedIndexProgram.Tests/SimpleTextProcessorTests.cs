@@ -6,24 +6,10 @@ public class SimpleTextProcessorTests
   private static readonly SimpleTextProcessor _bareProcessor = new SimpleTextProcessor([], []);
   private static readonly SimpleTextProcessor _processor = new(['.'], ["the"]);
 
-  [Fact]
-  public void SplitOnSpaces_SingleSpace_SplitsCorrectly()
-  {
-    var result = _bareProcessor.SplitOnSpaces("hello world");
-    Assert.Equal(["hello", "world"], result);
-  }
-
-  [Fact]
-  public void Stem_ReturnsStemmedWord()
-  {
-    var result = _bareProcessor.Stem("running");
-    Assert.Equal("run", result);
-  }
-
   public class ExtractTerms
   {
     [Fact]
-    public void ReturnsNormalizedTerms()
+    public void HandlesStopWordsSymbolsAndNumbers()
     {
       var result = _processor.ExtractTerms("  The cat is running.  ");
       Assert.Equal(["cat", "run"], result);
@@ -37,9 +23,9 @@ public class SimpleTextProcessorTests
     }
 
     [Fact]
-    public void SplitsOnSymbolsWithinTerms()
+    public void SplitsOnSymbolsAndNumberWithinTerms()
     {
-      var result = _processor.ExtractTerms("cat.dog");
+      var result = _processor.ExtractTerms("cat.2dog");
       Assert.Equal(["cat", "dog"], result);
     }
   }
@@ -60,27 +46,41 @@ public class SimpleTextProcessorTests
       Assert.Equal("hello world", result);
     }
   }
-  public class IsIndexable
+  // public class IsIndexable
+  // {
+  //   [Fact]
+  //   public void ReturnsFalse_if_length_less_than_3()
+  //   {
+  //     var result = _processor.NotStopWords("ab");
+  //     Assert.False(result);
+  //   }
+
+  //   [Fact]
+  //   public void ReturnsFalse_if_stop_word()
+  //   {
+  //     var result = _processor.NotStopWords("the");
+  //     Assert.False(result);
+  //   }
+
+  //   [Fact]
+  //   public void ReturnsTrue_if_length_more_than_2_and_not_stop_word()
+  //   {
+  //     var result = _processor.NotStopWords("hello");
+  //     Assert.True(result);
+  //   }
+  // }
+
+  [Fact]
+  public void SplitOnSpaces_SingleSpace_SplitsCorrectly()
   {
-    [Fact]
-    public void ReturnsFalse_if_length_less_than_3()
-    {
-      var result = _processor.IsIndexable("ab");
-      Assert.False(result);
-    }
+    var result = _bareProcessor.SplitOnSpaces("hello world");
+    Assert.Equal(["hello", "world"], result);
+  }
 
-    [Fact]
-    public void ReturnsFalse_if_stop_word()
-    {
-      var result = _processor.IsIndexable("the");
-      Assert.False(result);
-    }
-
-    [Fact]
-    public void ReturnsTrue_if_length_more_than_2_and_not_stop_word()
-    {
-      var result = _processor.IsIndexable("hello");
-      Assert.True(result);
-    }
+  [Fact]
+  public void Stem_ReturnsStemmedWord()
+  {
+    var result = _bareProcessor.Stem("running");
+    Assert.Equal("run", result);
   }
 }

@@ -33,13 +33,13 @@ public class SimpleTextProcessor : ITextProcessor
   }
   public List<string> NormalizeTerms(List<string> terms)
   {
-    var cleaned = RemoveSymbolsFromAll(terms);
+    var cleaned = RemoveSymbolsAndNumbersFromAll(terms);
     var split = SplitAllOnSpaces(cleaned);
-    var filtered = RemoveUnwantedTerms(split);
+    var filtered = RemoveStopWordsAndSmallTerms(split);
     return StemAll(filtered);
   }
 
-  private List<string> RemoveSymbolsFromAll(List<string> terms)
+  private List<string> RemoveSymbolsAndNumbersFromAll(List<string> terms)
   {
     return terms.Select(CleanSymbolsAndNumbers).ToList();
   }
@@ -49,9 +49,9 @@ public class SimpleTextProcessor : ITextProcessor
     return terms.SelectMany(SplitOnSpaces).ToList();
   }
 
-  private List<string> RemoveUnwantedTerms(List<string> terms)
+  private List<string> RemoveStopWordsAndSmallTerms(List<string> terms)
   {
-    return terms.Where(IsIndexable).ToList();
+    return terms.Where(t => NotStopWords(t) && NotSmall(t)).ToList();
   }
 
   private List<string> StemAll(List<string> terms)
@@ -71,9 +71,13 @@ public class SimpleTextProcessor : ITextProcessor
   {
     return term.Split(' ', StringSplitOptions.RemoveEmptyEntries).ToList();
   }
-  internal bool IsIndexable(string term)
+  private bool NotStopWords(string term)
   {
-    return !_stopWords.Contains(term) && term.Length > 2;
+    return !_stopWords.Contains(term);
+  }
+  private bool NotSmall(string term)
+  {
+    return term.Length > 2;
   }
   private static readonly EnglishStemmer Stemmer = new();
   internal string Stem(string word) => Stemmer.GetStem(word);

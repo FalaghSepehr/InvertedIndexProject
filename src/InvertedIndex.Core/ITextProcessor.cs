@@ -16,7 +16,6 @@ public interface ITextProcessor
 
   /// <summary>
   /// Normalizes already-tokenized terms using the implementation's processing pipeline.
-  /// Does not perform tokenization.
   /// </summary>
   /// <param name="terms">The tokenized terms to normalize.</param>
   /// <returns>A collection of processed terms.</returns>
@@ -24,7 +23,7 @@ public interface ITextProcessor
 
   /// <summary>
   /// Prepares raw input text for parsing by trimming, lowercasing, and tokenizing.
-  /// Does not apply normalization or filtering.
+  /// Does not apply normalization.
   /// </summary>
   /// <param name="rawText">The raw input string.</param>
   /// <returns>A list of raw tokens.</returns>
