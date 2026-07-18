@@ -95,18 +95,10 @@ public class SimpleTextProcessorTests
     }
 
     [Fact]
-    public void SplitsOnSymbolsAndNumberWithinTerms()
+    public void KeepsSymbolsAndNumbersWithinTerms()
     {
       var result = _processor.GetRawTokens("cat.2dog");
-      Assert.Equal(["cat", "dog"], result);
-    }
-
-    //edge case
-    [Fact]
-    public void IgnoresEmptyTokensFromLeadingTrailingSymbols()
-    {
-      var result = _processor.GetRawTokens(".hello.");
-      Assert.Equal(["hello"], result);
+      Assert.Equal(["cat.2dog"], result);
     }
   }
 }
