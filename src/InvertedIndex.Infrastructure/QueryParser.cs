@@ -19,16 +19,12 @@ public class QueryParser : IQueryParser
   public QueryBundle ParseQuery()
   {
     var rawInputText = _inputReader.ReadLine();
-    Console.WriteLine($"Raw input: {rawInputText}");
 
     var queryTokens = _textProcessor.GetRawTokens(rawInputText);
-    Console.WriteLine($"Tokens: {string.Join(", ", queryTokens)}");
 
     var categorizedTokens = Categorize(queryTokens);
-    Console.WriteLine($"MustHave after categorize: {string.Join(", ", categorizedTokens.MustHave)}");
 
     var result = NormalizeNonExactTokens(categorizedTokens);
-    Console.WriteLine($"MustHave after normalize: {string.Join(", ", result.MustHave)}");
 
     return result;
   }
