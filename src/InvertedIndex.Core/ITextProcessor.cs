@@ -22,12 +22,18 @@ public interface ITextProcessor
   List<string> NormalizeTerms(List<string> terms);
 
   /// <summary>
-  /// Prepares raw input text for parsing by trimming, lowercasing, and tokenizing.
+  /// Prepares raw text for parsing by trimming, lowercasing, and tokenizing.
   /// Does not apply normalization.
   /// </summary>
   /// <param name="rawText">The raw input string.</param>
-  /// <returns>A list of raw tokens.</returns>
+  /// <returns>A list of tokens.</returns>
   List<string> PrepareTokens(string rawText);
 
+  /// <summary>
+  /// Tokenizes raw text by white space.
+  /// Does not lowercase or normalize.
+  /// </summary>
+  /// <param name="rawText">The raw input string.</param>
+  /// <returns>A list of raw tokens.</returns>
   List<string> GetRawTokens(string rawText);
 }
