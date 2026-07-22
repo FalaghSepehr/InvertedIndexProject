@@ -29,10 +29,18 @@ public class InvertedIndexBuilder
     {
       var fileName = Path.GetFileNameWithoutExtension(docFileDir);
       var content = File.ReadAllText(docFileDir);
-      
+
       var rawTokens = textProcessor.GetRawTokens(content);
       var processedTokens = textProcessor.ExtractTerms(content);
-      var allTokens = rawTokens.Concat(processedTokens);
+      var bigramTokens = new List<string>();
+
+      // Generate bigrams from raw tokens
+      for (int i = 0; i < rawTokens.Count - 1; i++)
+      {
+        var bigram = rawTokens[i] + " " + rawTokens[i + 1];
+        bigramTokens.Add(bigram);
+      }
+      var allTokens = rawTokens.Concat(processedTokens).Concat(bigramTokens);
 
       foreach (string term in allTokens)
       {
