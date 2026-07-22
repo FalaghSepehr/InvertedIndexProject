@@ -2,8 +2,8 @@ using InvertedIndex.Core;
 
 namespace InvertedIndex.Infrastructure;
 /// <summary>
-/// Builds and queries an inverted index from text documents.
-/// Accepts an <see cref="ITextProcessor"/> for term extraction, enabling different text processing strategies.
+/// Builds an inverted index from text documents. Stores single tokens, processed terms,
+/// and bigrams (two-word phrases) for exact phrase search support.
 /// </summary>
 public class InvertedIndexBuilder
 {

@@ -4,8 +4,7 @@ namespace InvertedIndex.Infrastructure;
 /// <summary>
 /// Parses a raw query string into a <see cref="QueryBundle"/> by categorizing terms
 /// by prefix: + (at-least-one), - (must-not-have), and bare (must-have).
-/// Each term is normalized using the injected <see cref="ITextProcessor"/>.
-/// If the term is in double quotes it wont get normalized.
+/// Exact phrases in double quotes are preserved as-is (limited to two words).
 /// </summary>
 public class QueryParser : IQueryParser
 {
