@@ -20,14 +20,48 @@ public class QueryParser : IQueryParser
   public QueryBundle ParseQuery()
   {
     var rawInputText = _inputReader.ReadLine();
+    var queryTokens = new List<string>();
 
-    var queryTokens = _textProcessor.GetRawTokens(rawInputText);
+    var quotedTokens = ExtractQuotedPhrases(ref rawInputText);
+    var remainingTokens = _textProcessor.GetRawTokens(rawInputText);
+
+    queryTokens.AddRange(quotedTokens);
+    queryTokens.AddRange(remainingTokens);
 
     var categorizedTokens = Categorize(queryTokens);
+    return NormalizeNonExactTokens(categorizedTokens);
+  }
 
-    var result = NormalizeNonExactTokens(categorizedTokens);
+  private List<string> ExtractQuotedPhrases(ref string text)
+  {
+    var phrases = new List<string>();
 
-    return result;
+    while (true)
+    {
+      var start = text.IndexOf('"');
+      if (start == -1)
+      {
+        break;
+      }
+      var end = text.IndexOf('"', start + 1);
+      if (end == -1)
+      {
+        break;
+      }
+      
+      var phraseStart = start;
+
+      if (start > 0 && (text[start - 1] == '+' || text[start - 1] == '-'))
+      {
+        phraseStart = start - 1;
+      }
+      var token = text.Substring(phraseStart, end - phraseStart + 1);
+      phrases.Add(token);
+
+      text = text.Remove(phraseStart, end - phraseStart + 1).Trim();
+    }
+
+    return phrases;
   }
   internal QueryBundle Categorize(List<string> tokens)
   {
