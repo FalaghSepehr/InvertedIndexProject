@@ -32,14 +32,8 @@ public class InvertedIndexBuilder
 
       var rawTokens = textProcessor.GetRawTokens(content);
       var processedTokens = textProcessor.ExtractTerms(content);
-      var bigramTokens = new List<string>();
+      var bigramTokens = GetBigramTokens(rawTokens);
 
-      // Generate bigrams from raw tokens
-      for (int i = 0; i < rawTokens.Count - 1; i++)
-      {
-        var bigram = rawTokens[i] + " " + rawTokens[i + 1];
-        bigramTokens.Add(bigram);
-      }
       var allTokens = rawTokens.Concat(processedTokens).Concat(bigramTokens);
 
       foreach (string term in allTokens)
@@ -54,6 +48,20 @@ public class InvertedIndexBuilder
     }
     return new InvertedIndexBuilder(invertedIndexDic);
   }
+
+  private static List<string> GetBigramTokens(List<string> rawTokens)
+  {
+    var result = new List<string>();
+
+    for (int i = 0; i < rawTokens.Count - 1; i++)
+    {
+      var bigram = rawTokens[i] + " " + rawTokens[i + 1];
+      result.Add(bigram);
+    }
+
+    return result;
+  }
+
   /// <summary>
   /// Exports the entire index to the specified output writer for debugging or external use.
   /// </summary>
