@@ -17,7 +17,7 @@ public class QueryParserTests
   public void ParseQuery_HandlesBothNormalQueriesAndExactPhraseQueries()
   {
     _inputReader.ReadLine().Returns("\"Running\" cat +dog -bird");
-    _textProcessor.GetRawTokens("\"Running\" cat +dog -bird").Returns(["\"Running\"", "cat", "+dog", "-bird"]);
+    _textProcessor.GetRawTokens("cat +dog -bird").Returns(["cat", "+dog", "-bird"]);
     _textProcessor.NormalizeTerms(Arg.Any<List<string>>()).Returns(x => x.Arg<List<string>>());
 
     var result = _sut.ParseQuery();
@@ -53,8 +53,7 @@ public class QueryParserTests
   public void ParseQuery_HandlesOnlyExactPhraseQueries()
   {
     _inputReader.ReadLine().Returns("\"Running\" +\"Cat\" -\"dog.2\"");
-    _textProcessor.GetRawTokens("\"Running\" +\"Cat\" -\"dog.2\"").Returns(["\"Running\"", "+\"Cat\"", "-\"dog.2\""]);
-
+    _textProcessor.GetRawTokens("").Returns([]);
 
     var result = _sut.ParseQuery();
 
@@ -62,6 +61,19 @@ public class QueryParserTests
     Assert.Equal(["Running"], result.MustHave);
     Assert.Equal(["Cat"], result.AtLeastOne);
     Assert.Equal(["dog.2"], result.MustNotHave);
+  }
+
+  [Fact]
+  public void ParseQuery_HandlesTwoWordExactPhraseQueries()
+  {
+    _inputReader.ReadLine().Returns("\"Star Academy\" +\"I have\" -\"Bad Cat\"");
+    _textProcessor.GetRawTokens("").Returns([]);
+    
+    var result = _sut.ParseQuery();
+
+    Assert.Equal(["Star Academy"], result.MustHave);
+    Assert.Equal(["I have"], result.AtLeastOne);
+    Assert.Equal(["Bad Cat"], result.MustNotHave);
   }
 
   [Fact]
