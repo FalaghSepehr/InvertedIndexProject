@@ -2,7 +2,7 @@ namespace InvertedIndexProgram.Tests;
 
 public static class TestHelpers
 {
-  public static void AssertEqual<TKey, TValue>(Dictionary<TKey, TValue> expected, Dictionary<TKey, TValue> actual)
+  public static void AssertEqual<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> expected, IReadOnlyDictionary<TKey, TValue> actual)
   {
     var missingInActual = expected.Keys.Except(actual.Keys).ToList();
     var extraInActual = actual.Keys.Except(expected.Keys).ToList();
