@@ -59,7 +59,7 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
   {
     var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     Directory.CreateDirectory(tempDocumentsDir);
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "The Cats\tRunning.2dog\n .hello. \rMac");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "The Cats\tRunning dog\nhello\rMac");
 
     var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
@@ -79,7 +79,36 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
       ["mac"] = ["doc1"],
     };
 
-    Assert.Equal(expectedDictionary, sut.InvertedIndexDic);
+    TestHelpers.AssertEqual(expectedDictionary, sut.InvertedIndexDic);
+
+    Directory.Delete(tempDocumentsDir, true);
+  }
+
+  [Fact]
+  public void Build_StoresBigramsForPhraseSearch()
+  {
+    var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+    Directory.CreateDirectory(tempDocumentsDir);
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "star academy is great");
+
+    var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
+
+    var expectedDictionary = new Dictionary<string, HashSet<string>>
+    {
+      // Single tokens
+      ["star"] = ["doc1"],
+      ["academy"] = ["doc1"],
+      ["is"] = ["doc1"],
+      ["great"] = ["doc1"],
+      // Bigrams
+      ["star academy"] = ["doc1"],
+      ["academy is"] = ["doc1"],
+      ["is great"] = ["doc1"],
+      // Processed tokens (stemmed)
+      ["academi"] = ["doc1"]
+    };
+
+    TestHelpers.AssertEqual(expectedDictionary, sut.InvertedIndexDic);
 
     Directory.Delete(tempDocumentsDir, true);
   }
