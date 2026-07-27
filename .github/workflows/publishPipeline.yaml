@@ -17,13 +17,11 @@ jobs:
 
       - name: Get current release version
         id: version
-        uses: pozetroninc/github-action-get-latest-release@master
-        with:
-            repository: FalaghSepehr/InvertedIndexProject
+        run: echo "release=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT  
 
       - name: Build library and generate NuGet Package
         run: dotnet pack -c Release -o artifacts -p:PackageVersion=${{ steps.version.outputs.release }}
         working-directory: src/InvertedIndex.Infrastructure
 
       - name: Publish NuGet Package
-        run: dotnet nuget push ./**/*.nupkg --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
