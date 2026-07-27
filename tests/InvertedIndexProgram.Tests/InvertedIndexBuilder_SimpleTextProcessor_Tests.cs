@@ -16,14 +16,13 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
   {
     var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     Directory.CreateDirectory(tempDocumentsDir);
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "cat dog");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "cat");
 
     var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>
     {
       ["cat"] = ["doc1"],
-      ["dog"] = ["doc1"]
     };
 
     Assert.Equal(expectedDictionary, sut.InvertedIndexDic);
@@ -36,20 +35,20 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
   {
     var tempDocumentsDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
     Directory.CreateDirectory(tempDocumentsDir);
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "dog bird");
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc2"), "cat dog");
-    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc3"), "bird cat");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc1"), "dog");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc2"), "cat");
+    File.WriteAllText(Path.Combine(tempDocumentsDir, "doc3"), "bird");
 
     var sut = InvertedIndexBuilder.Build(Directory.GetFiles(tempDocumentsDir), _simpleTextProcessor);
 
     var expectedDictionary = new Dictionary<string, HashSet<string>>
     {
-      ["cat"] = ["doc2", "doc3"],
-      ["dog"] = ["doc1", "doc2"],
-      ["bird"] = ["doc1", "doc3"]
+      ["dog"] = ["doc1"],
+      ["cat"] = ["doc2"],
+      ["bird"] = ["doc3"]
     };
 
-    Assert.Equal(expectedDictionary, sut.InvertedIndexDic);
+    TestHelpers.AssertEqual(expectedDictionary, sut.InvertedIndexDic);
 
     Directory.Delete(tempDocumentsDir, true);
   }
@@ -77,6 +76,13 @@ public class InvertedIndexBuilder_SimpleTextProcessor_Tests
       ["cat"] = ["doc1"],
       ["run"] = ["doc1"],
       ["mac"] = ["doc1"],
+
+      //bigrams:
+      ["The Cats"] = ["doc1"],
+      ["Cats Running"] = ["doc1"],
+      ["Running dog"] = ["doc1"],
+      ["dog hello"] = ["doc1"],
+      ["hello Mac"] = ["doc1"],
     };
 
     TestHelpers.AssertEqual(expectedDictionary, sut.InvertedIndexDic);
