@@ -1,19 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <TargetFramework>net10.0</TargetFramework>
-      <PackageId>FalaghSepehr.InvertedIndex</PackageId>
-      <Authors>FalaghSepehr</Authors>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <PackageId>FalaghSepehr.InvertedIndex</PackageId>
+    <Authors>FalaghSepehr</Authors>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="PorterStemmer" Version="1.0.0" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\InvertedIndex.Core\InvertedIndex.Core.csproj" />
   </ItemGroup>
@@ -21,4 +19,5 @@
   <ItemGroup>
     <InternalsVisibleTo Include="InvertedIndexProgram.Tests" />
   </ItemGroup>
+  
 </Project>
