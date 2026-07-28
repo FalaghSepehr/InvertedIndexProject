@@ -19,10 +19,14 @@ jobs:
         id: version
         run: echo "release=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT  
 
-      - name: Build library and generate NuGet Package
+      - name: Build Core library and generate NuGet Package
+        run: dotnet pack -c Release -o artifacts -p:PackageVersion=${{ steps.version.outputs.release }}
+        working-directory: src/InvertedIndex.Core
+
+      - name: Build Infrastructure library and generate NuGet Package
         run: dotnet pack -c Release -o artifacts -p:PackageVersion=${{ steps.version.outputs.release }}
         working-directory: src/InvertedIndex.Infrastructure
 
-      - name: Publish NuGet Package
+      - name: Publish NuGet Packages
         run: dotnet nuget push ./**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
         
