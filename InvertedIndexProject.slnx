@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/InvertedIndex.Core/InvertedIndex.Core.csproj" />
     <Project Path="src/InvertedIndex.Infrastructure/InvertedIndex.Infrastructure.csproj" />
+    <Project Path="src/InvertedIndex.Api/InvertedIndex.Api.csproj" />
     <Project Path="src/InvertedIndex.Console/InvertedIndex.Console.csproj" />
   </Folder>
   <Folder Name="/tests/">

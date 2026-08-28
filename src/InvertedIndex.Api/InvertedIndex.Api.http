@@ -1,0 +1,6 @@
+@InvertedIndex.Api_HostAddress = http://localhost:5133
+
+GET {{InvertedIndex.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
