@@ -71,7 +71,8 @@ public class ConsoleUITests
   [Fact]
   public void HandleInput_AcceptsMenuSelectionWithLeadingZeroAndSpaces()
   {
-    _inputReader.ReadLine().Returns(" 01 ");
+    _inputReader.ReadLine().Returns(" 01 ", "test query");
+    _queryParser.ParseQuery("test query").Returns(new QueryBundle());
     _searchService.Search(Arg.Any<QueryBundle>()).Returns([]);
 
     _sut.HandleInput(out var shouldExit);
@@ -84,7 +85,8 @@ public class ConsoleUITests
   [Fact]
   public void HandleInput_Searches_WithCorrectMessage_when_menuSelect_1()
   {
-    _inputReader.ReadLine().Returns("1");
+    _inputReader.ReadLine().Returns("1", "test query");
+    _queryParser.ParseQuery("test query").Returns(new QueryBundle());
     _searchService.Search(Arg.Any<QueryBundle>()).Returns([]);
 
     _sut.HandleInput(out bool shouldExit);
@@ -141,7 +143,8 @@ public class ConsoleUITests
   [Fact]
   public void GetResultMessage_ReturnsCommaSeparatedDocumentNames()
   {
-    _queryParser.ParseQuery().Returns(new QueryBundle());
+    _inputReader.ReadLine().Returns("cat dog");
+    _queryParser.ParseQuery("cat dog").Returns(new QueryBundle());
     _searchService.Search(Arg.Any<QueryBundle>()).Returns(["doc1", "doc2"]);
 
     var result = _sut.GetResultMessage();
@@ -152,7 +155,8 @@ public class ConsoleUITests
   [Fact]
   public void GetResultMessage_ReturnsNoResultsMessage_when_results_empty()
   {
-    _queryParser.ParseQuery().Returns(new QueryBundle());
+    _inputReader.ReadLine().Returns("cat dog");
+    _queryParser.ParseQuery("cat dog").Returns(new QueryBundle());
     _searchService.Search(Arg.Any<QueryBundle>()).Returns([]);
 
     var result = _sut.GetResultMessage();
