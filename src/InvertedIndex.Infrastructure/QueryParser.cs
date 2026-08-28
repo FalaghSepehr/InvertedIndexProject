@@ -8,21 +8,18 @@ namespace InvertedIndex.Infrastructure;
 /// </summary>
 public class QueryParser : IQueryParser
 {
-  private readonly IInputReader _inputReader;
   private readonly ITextProcessor _textProcessor;
 
-  public QueryParser(ITextProcessor textProcessor, IInputReader inputReader)
+  public QueryParser(ITextProcessor textProcessor)
   {
-    _inputReader = inputReader;
     _textProcessor = textProcessor;
   }
-  public QueryBundle ParseQuery()
+  public QueryBundle ParseQuery(string rawText)
   {
-    var rawInputText = _inputReader.ReadLine();
     var queryTokens = new List<string>();
 
-    var quotedTokens = ExtractQuotedPhrases(ref rawInputText);
-    var remainingTokens = _textProcessor.GetRawTokens(rawInputText);
+    var quotedTokens = ExtractQuotedPhrases(ref rawText);
+    var remainingTokens = _textProcessor.GetRawTokens(rawText);
 
     queryTokens.AddRange(quotedTokens);
     queryTokens.AddRange(remainingTokens);
