@@ -77,7 +77,8 @@ public class ConsoleUI
   }
   internal string GetResultMessage()
   {
-    var results = _searcher.Search(_queryParser.ParseQuery());
+    var rawQuery = _inputReader.ReadLine();
+    var results = _searcher.Search(_queryParser.ParseQuery(rawQuery));
     return results.Count == 0 ? "No results!" : string.Join(", ", results);
   }
 }
