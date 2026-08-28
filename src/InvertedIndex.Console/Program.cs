@@ -93,7 +93,7 @@ class Program
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
         .Build();
 
-    var appSettings = configuration.GetSection("AppSettings");
+    var appSettings = configuration.GetSection("FilePaths");
 
     return new AppConfig
     {
