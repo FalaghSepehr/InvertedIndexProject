@@ -4,6 +4,15 @@ namespace InvertedIndex.Infrastructure;
 
 public class Searcher : ISearchService
 {
+  internal record SearchContext
+    (
+      bool HasMustHaveTerms,
+      bool HasAtLeastOneTerms,
+      bool HasMustNotHaveTerms,
+      List<string> MustHaveDocs,
+      List<string> AtLeastOneDocs,
+      List<string> MustNotHaveDocs
+    );
   public List<string> Search(QueryBundle queryBundle, IReadOnlyDictionary<string, HashSet<string>> invertedIndexDic)
   {
     var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
@@ -13,7 +22,17 @@ public class Searcher : ISearchService
     var atLeastOneDocs = UnionTermDocs(queryBundle.AtLeastOne, invertedIndexDic);
     var mustNotHaveDocs = UnionTermDocs(queryBundle.MustNotHave, invertedIndexDic);
 
-    var result = BuildResult(hasMustHaveTerms, hasAtLeastOneTerms, hasMustNotHaveTerms, mustHaveDocs, atLeastOneDocs, mustNotHaveDocs, invertedIndexDic);
+    var context = new SearchContext
+    (
+      queryBundle.MustHave.Count > 0,
+      queryBundle.AtLeastOne.Count > 0,
+      queryBundle.MustNotHave.Count > 0,
+      mustHaveDocs,
+      atLeastOneDocs,
+      mustNotHaveDocs
+    );
+
+    var result = BuildResult(context, invertedIndexDic);
 
     return result.OrderBy(v => v).ToList();
   }
@@ -54,9 +73,9 @@ public class Searcher : ISearchService
     }
     return resultSet.ToList();
   }
-  internal List<string> BuildResult(bool hasMustHaveTerms, bool hasAtLeastOneTerms, bool hasMustNotHaveTerms, List<string> mustHaveDocs, List<string> atLeastOneDocs, List<string> mustNotHaveDocs, IReadOnlyDictionary<string, HashSet<string>> invertedIndexDic)
+  internal List<string> BuildResult(SearchContext context, IReadOnlyDictionary<string, HashSet<string>> invertedIndexDic)
   {
-    if (!hasMustHaveTerms && !hasAtLeastOneTerms && !hasMustNotHaveTerms)
+    if (!context.HasMustHaveTerms && !context.HasAtLeastOneTerms && !context.HasMustNotHaveTerms)
     {
       return new List<string>();
     }
@@ -64,29 +83,29 @@ public class Searcher : ISearchService
     var allDocs = invertedIndexDic.Values.SelectMany(d => d).Distinct();
     List<string> positiveDocs;
 
-    if (hasMustHaveTerms)
+    if (context.HasMustHaveTerms)
     {
-      if (mustHaveDocs.Count == 0)
+      if (context.MustHaveDocs.Count == 0)
       {
         return [];
       }
-      if (hasAtLeastOneTerms)
+      if (context.HasAtLeastOneTerms)
       {
-        positiveDocs = atLeastOneDocs.Count == 0 ? [] : mustHaveDocs.Intersect(atLeastOneDocs).ToList();
+        positiveDocs = context.AtLeastOneDocs.Count == 0 ? [] : context.MustHaveDocs.Intersect(context.AtLeastOneDocs).ToList();
       }
       else
       {
-        positiveDocs = mustHaveDocs;
+        positiveDocs = context.MustHaveDocs;
       }
     }
-    else if (hasAtLeastOneTerms)
+    else if (context.HasAtLeastOneTerms)
     {
-      positiveDocs = atLeastOneDocs;
+      positiveDocs = context.AtLeastOneDocs;
     }
     else
     {
       positiveDocs = allDocs.ToList();
     }
-    return positiveDocs.Except(mustNotHaveDocs).ToList();
+    return positiveDocs.Except(context.MustNotHaveDocs).ToList();
   }
 }
