@@ -23,10 +23,12 @@ class Program
       var textProcessor = sp.GetRequiredService<ITextProcessor>();
       return InvertedIndexBuilder.Build(GetDocumentPathsArray(config.DocumentsDir), textProcessor);
     });
+    services.AddSingleton<Searcher>();
     services.AddSingleton<ISearchService>(sp =>
     {
       var invertedIndex = sp.GetRequiredService<InvertedIndexBuilder>();
-      return new Searcher(invertedIndex.InvertedIndexDic);
+      var searcher = sp.GetRequiredService<Searcher>();
+      return new SearchService(searcher, invertedIndex.InvertedIndexDic);
     });
     services.AddSingleton<IQueryParser, QueryParser>();
     services.AddSingleton<ConsoleUI>();
@@ -42,7 +44,7 @@ class Program
 
     var consoleWriter = provider.GetRequiredService<IOutputWriter>();
     consoleWriter.WriteLine($"Index written to {config.OutputPath}");
-    
+
     consoleUI.Run(invertedIndex.IsEmpty);
   }
   /// <summary>

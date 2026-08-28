@@ -11,11 +11,11 @@ public class ConsoleUI
   private readonly IInputReader _inputReader;
   private readonly IOutputWriter _outputWriter;
   private readonly IQueryParser _queryParser;
-  private readonly ISearchService _searcher;
-  public ConsoleUI(ISearchService searcher, IQueryParser queryParser, IInputReader inputReader, IOutputWriter outputWriter)
+  private readonly ISearchService _searchService;
+  public ConsoleUI(ISearchService searchService, IQueryParser queryParser, IInputReader inputReader, IOutputWriter outputWriter)
   {
     _queryParser = queryParser;
-    _searcher = searcher;
+    _searchService = searchService;
     _inputReader = inputReader;
     _outputWriter = outputWriter;
   }
@@ -78,7 +78,7 @@ public class ConsoleUI
   internal string GetResultMessage()
   {
     var rawQuery = _inputReader.ReadLine();
-    var results = _searcher.Search(_queryParser.ParseQuery(rawQuery));
+    var results = _searchService.Search(_queryParser.ParseQuery(rawQuery));
     return results.Count == 0 ? "No results!" : string.Join(", ", results);
   }
 }

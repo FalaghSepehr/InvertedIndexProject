@@ -2,7 +2,7 @@ using InvertedIndex.Core;
 
 namespace InvertedIndex.Infrastructure;
 
-public class Searcher : ISearchService
+public class Searcher
 {
   internal record SearchContext
     (
