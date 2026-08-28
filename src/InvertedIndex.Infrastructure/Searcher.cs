@@ -4,15 +4,6 @@ namespace InvertedIndex.Infrastructure;
 
 public class Searcher
 {
-  internal record SearchContext
-  (
-    bool HasMustHaveTerms,
-    bool HasAtLeastOneTerms,
-    bool HasMustNotHaveTerms,
-    List<string> MustHaveDocs,
-    List<string> AtLeastOneDocs,
-    List<string> MustNotHaveDocs
-  );
   public List<string> Search(QueryBundle queryBundle, IReadOnlyDictionary<string, HashSet<string>> invertedIndexDic)
   {
     var hasMustHaveTerms = queryBundle.MustHave.Count > 0;
@@ -109,3 +100,12 @@ public class Searcher
     return positiveDocs.Except(context.MustNotHaveDocs).ToList();
   }
 }
+internal record SearchContext
+(
+  bool HasMustHaveTerms,
+  bool HasAtLeastOneTerms,
+  bool HasMustNotHaveTerms,
+  List<string> MustHaveDocs,
+  List<string> AtLeastOneDocs,
+  List<string> MustNotHaveDocs
+);
