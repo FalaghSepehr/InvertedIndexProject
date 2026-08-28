@@ -7,7 +7,9 @@ namespace InvertedIndex.Console;
 
 class Program
 {
-  private static readonly string BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+  private static readonly string ProjectDir = AppDomain.CurrentDomain.BaseDirectory;
+  private static readonly string SolutionRoot = GetSolutionRoot();
+
   public static void Main(string[] args)
   {
     var config = LoadConfig();
@@ -47,6 +49,43 @@ class Program
 
     consoleUI.Run(invertedIndex.IsEmpty);
   }
+
+  private static string GetSolutionRoot()
+  {
+    var current = new DirectoryInfo(Environment.CurrentDirectory);
+    while (current != null)
+    {
+      if (Directory.EnumerateFiles(current.FullName, "*.slnx").Any())
+      {
+        return current.FullName;
+      }
+
+      current = current.Parent;
+    }
+    throw new InvalidOperationException("Could not locate solution root containing a .slnx file.");
+  }
+  /// <summary>
+  /// Provides the user's config loaded from appsettings.json
+  /// </summary>
+  /// <returns></returns>
+  internal static AppConfig LoadConfig()
+  {
+    var configuration = new ConfigurationBuilder()
+        .SetBasePath(ProjectDir)
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .Build();
+
+    var appSettings = configuration.GetSection("FilePaths");
+
+    return new AppConfig
+    {
+      DocumentsDir = Path.Combine(SolutionRoot, appSettings["DocumentsPath"]),
+      OutputPath = Path.Combine(SolutionRoot, appSettings["OutputPath"]),
+      SymbolsAndNumbers = LoadSymbols(Path.Combine(SolutionRoot, appSettings["SymbolsPath"])),
+      StopWords = LoadStopWords(Path.Combine(SolutionRoot, appSettings["StopWordsPath"]))
+    };
+  }
+
   /// <summary>
   /// Gets seperate documnet paths stored in the given directory.
   /// </summary>
@@ -81,26 +120,5 @@ class Program
       throw new InvalidOperationException($"Required file not found: {path}");
     }
     return new HashSet<string>(File.ReadAllText(path).Split(' ', StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
-  }
-  /// <summary>
-  /// Provides the user's config loaded from appsettings.json
-  /// </summary>
-  /// <returns></returns>
-  internal static AppConfig LoadConfig()
-  {
-    var configuration = new ConfigurationBuilder()
-        .SetBasePath(BaseDir)
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-        .Build();
-
-    var appSettings = configuration.GetSection("FilePaths");
-
-    return new AppConfig
-    {
-      DocumentsDir = Path.Combine(BaseDir, appSettings["DocumentsPath"]),
-      OutputPath = Path.Combine(BaseDir, appSettings["OutputPath"]),
-      SymbolsAndNumbers = LoadSymbols(Path.Combine(BaseDir, appSettings["SymbolsPath"])),
-      StopWords = LoadStopWords(Path.Combine(BaseDir, appSettings["StopWordsPath"]))
-    };
   }
 }
